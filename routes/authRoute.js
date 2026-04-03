@@ -10,4 +10,7 @@ router.post('/register', registerController);
 
 //LOGIN || POST
 router.post('/login', loginController);
+
+//test route
+router.get('/test', testController);
 export default router;
