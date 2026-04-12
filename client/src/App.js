@@ -1,15 +1,13 @@
 
-import './App.css';
-
-import Layout from './components/Layout/Layout';
-
+import { Routes, Route } from 'react-router-dom'
 function App() {
   return (
     <>
-      <Layout>
-        <h1>App comp</h1>
-      </Layout>
+      <Routes>
+        <Route>
 
+        </Route>
+      </Routes>
 
     </>
   );
