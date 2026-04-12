@@ -1,14 +1,15 @@
 
 import './App.css';
-import layout from './components/Layout/layout';
+
+import Layout from './components/Layout/Layout';
 
 function App() {
   return (
     <>
-      <layout>
-        <h1>Welcome to Ecommerce App</h1>
+      <Layout>
+        <h1>App comp</h1>
+      </Layout>
 
-      </layout>
 
     </>
   );
