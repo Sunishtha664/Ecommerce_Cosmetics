@@ -1,5 +1,6 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
+import { GiShoppingBag } from "react-icons/gi";
 
 const Header = () => {
     return (
@@ -10,30 +11,35 @@ const Header = () => {
                         <span className="navbar-toggler-icon" />
                     </button>
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-                        <NavLink className="navbar-brand" to="/" href="#">
-                            Hidden brand
-                        </NavLink>
+                        <Link className="navbar-brand" to="/">
+                            <GiShoppingBag /> Luminelle
+                        </Link>
 
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink className="nav-link active" aria-current="page" to="/" href="#">
+                                <NavLink className="nav-link " to="/" >
                                     Home
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/category" href="#">
+                                    Category
                                 </NavLink>
                             </li>
 
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/register" href="#">
+                                <NavLink className="nav-link" to="/register" >
                                     Register
                                 </NavLink>
                             </li>
 
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/login" href="#">
+                                <NavLink className="nav-link" to="/login">
                                     Login
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/cart" href="#">
+                                <NavLink className="nav-link" to="/cart" >
                                     Cart (0)
                                 </NavLink>
                             </li>
