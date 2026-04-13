@@ -183,3 +183,44 @@
   line-height: 1.7;
   margin-bottom: 15px;
 }
+
+/*====Privacy Policy css====*/
+.privacy-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.privacy-left {
+  flex: 1;
+  min-width: 300px;
+}
+
+.privacy-img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.privacy-right {
+  flex: 1;
+  min-width: 300px;
+}
+
+.privacy-title {
+  background-color: #111;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.privacy-text {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
