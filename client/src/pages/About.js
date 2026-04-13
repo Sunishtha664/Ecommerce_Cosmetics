@@ -3,7 +3,7 @@ import Layout from "./../components/Layout/Layout";
 
 const About = () => {
     return (
-        <Layout>
+        <Layout title="About Us - Luminelle">
             <div className="about-container">
                 <div className="about-left">
                     <img
