@@ -48,4 +48,4 @@ const Register = () => {
     )
 }
 
-export default Register hello
+export default Register
