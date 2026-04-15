@@ -224,3 +224,13 @@
   line-height: 1.7;
   margin-bottom: 15px;
 }
+
+/*====Register css====*/
+.register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  flex-direction: column;
+
+}
