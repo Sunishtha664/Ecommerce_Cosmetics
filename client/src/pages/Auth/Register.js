@@ -7,11 +7,17 @@ const Register = () => {
     const [password, setPassword] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
+
+    //form function
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log(name, email, password, phone, address)
+    }
     return (
         <Layout title="Register Page">
             <div className="register">
                 <h1>Registration Form</h1>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-control" id="exampleInputName" placeholder='Enter Your Name' required />
 
@@ -34,7 +40,7 @@ const Register = () => {
 
                     </div>
 
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" className="btn btn-primary" >Submit</button>
                 </form>
 
             </div>
