@@ -1,33 +1,34 @@
 import express from 'express';
-import colors from 'colors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import cors from 'cors';
 import connectDB from './config/db.js';
 import authRoute from './routes/authRoute.js';
-import cors from 'cors';
 
-// config
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// middleware
+console.log("Setting up CORS middleware...");
+
+// ✅ Simple CORS with wildcard for debugging
 app.use(cors());
+console.log("CORS middleware applied");
+
 app.use(express.json());
 app.use(morgan('dev'));
 
-// routes
+console.log("All middleware setup complete");
+
 app.use('/api/v1/auth', authRoute);
 
-// test route
 app.get('/', (req, res) => {
-    res.send("<h1>Welcome to Ecommerce App</h1>");
+    res.send("API WORKING");
 });
 
-// port
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-    console.log(`Server running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan.white);
+    console.log(`Server running on port ${PORT}`);
 });
