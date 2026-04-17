@@ -6,35 +6,28 @@ import connectDB from './config/db.js';
 import authRoute from './routes/authRoute.js';
 import cors from 'cors';
 
-//config env
+// config
 dotenv.config();
-
-//database config
-
 connectDB();
 
-//rest object
 const app = express();
 
-//middelware
+// middleware
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-//routes
+// routes
 app.use('/api/v1/auth', authRoute);
 
-//rest api
+// test route
 app.get('/', (req, res) => {
-    res.send(
-        "<h1>Welcome to Ecommerce App</h1>"
-    );
+    res.send("<h1>Welcome to Ecommerce App</h1>");
 });
 
-//port
+// port
 const PORT = process.env.PORT || 8080;
 
-//run listen
 app.listen(PORT, () => {
-    console.log(`Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan.white);
+    console.log(`Server running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan.white);
 });

@@ -1,67 +1,57 @@
-import React, { useState } from 'react'
-import Layout from '../../components/Layout/Layout'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-
+import React, { useState } from 'react';
+import Layout from '../../components/Layout/Layout';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Register = () => {
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [phone, setPhone] = useState("")
-    const [address, setAddress] = useState("")
-    const navigate = useNavigate()
-    //form function
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
+
+    const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+
         try {
-            const res = await axios.post('/api/v1/auth/register', { name, email, password, phone, address })
-            if (res && res.data.success) {
-                toast.success(res.data.message)
-                navigate('/login')
+            const res = await axios.post(
+                `${process.env.REACT_APP_API}/api/v1/auth/register`,
+                { name, email, password, phone, address }
+            );
+
+            if (res.data.success) {
+                toast.success(res.data.message);
+                navigate('/login');
             } else {
-                toast.error(res.data.message)
+                toast.error(res.data.message);
             }
+
         } catch (error) {
             console.log(error);
-            toast.error("Something went wrong")
+            toast.error("Something went wrong");
         }
-    }
+    };
 
     return (
         <Layout title="Register Page">
             <div className="register">
-                <h1>Registration Form</h1>
+                <h1>Register</h1>
+
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-control" id="exampleInputName" placeholder='Enter Your Name' required />
+                    <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                    <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} required />
 
-                    </div>
-                    <div className="mb-3">
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" id="exampleInputName" placeholder='Enter Your Email' required />
-
-                    </div>
-
-                    <div className="mb-3">
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" id="exampleInputPassword1" placeholder='Enter Your Password' required />
-                    </div>
-
-                    <div className="mb-3">
-                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="form-control" id="exampleInputName" placeholder='Enter Your Phone Number' required />
-
-                    </div>
-                    <div className="mb-3">
-                        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="form-control" id="exampleInputName" placeholder='Enter Your Address' required />
-
-                    </div>
-
-                    <button type="submit" className="btn btn-primary" >Submit</button>
+                    <button type="submit">Register</button>
                 </form>
-
             </div>
         </Layout>
-    )
-}
+    );
+};
 
-export default Register
+export default Register;
