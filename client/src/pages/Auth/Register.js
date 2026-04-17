@@ -39,18 +39,86 @@ const Register = () => {
 
     return (
         <Layout title="Register Page">
-            <div className="register">
-                <h1>Register</h1>
+            <div className="register-container">
+                <div className="register-wrapper">
+                    <div className="register-header">
+                        <h1 className="register-title">Create Account</h1>
+                        <p className="register-subtitle">Join our community and start shopping</p>
+                    </div>
 
-                <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                    <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                    <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} required />
+                    <form onSubmit={handleSubmit} className="register-form">
+                        <div className="form-group">
+                            <label htmlFor="name" className="form-label">Full Name</label>
+                            <input
+                                id="name"
+                                type="text"
+                                placeholder="John Doe"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                className="form-input"
+                            />
+                        </div>
 
-                    <button type="submit">Register</button>
-                </form>
+                        <div className="form-group">
+                            <label htmlFor="email" className="form-label">Email Address</label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="your@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="form-input"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="password" className="form-label">Password</label>
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="form-input"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="phone" className="form-label">Phone Number</label>
+                            <input
+                                id="phone"
+                                type="text"
+                                placeholder="+1 (555) 123-4567"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                                className="form-input"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="address" className="form-label">Address</label>
+                            <input
+                                id="address"
+                                type="text"
+                                placeholder="123 Main Street, City, State"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                                className="form-input"
+                            />
+                        </div>
+
+                        <button type="submit" className="submit-btn">Create Account</button>
+                    </form>
+
+                    <div className="register-footer">
+                        <p>Already have an account? <a href="/login" className="login-link">Sign in</a></p>
+                    </div>
+                </div>
             </div>
         </Layout>
     );
