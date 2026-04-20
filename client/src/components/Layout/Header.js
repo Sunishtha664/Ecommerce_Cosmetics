@@ -3,6 +3,7 @@ import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { GiShoppingBag } from "react-icons/gi";
 import { useAuth } from '../../context/auth';
 
+
 const Header = () => {
     const [auth, setAuth] = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
@@ -10,11 +11,12 @@ const Header = () => {
 
     const handleLogout = () => {
         setAuth({
-            ...auth,
             user: null,
             token: ""
         });
-        localStorage.removeItem('token  ');
+        localStorage.removeItem('auth');
+        navigate('/login');
+
     };
 
     return (
