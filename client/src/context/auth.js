@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 
 const AuthContext = createContext();
 
@@ -7,12 +7,25 @@ const AuthProvider = ({ children }) => {
         user: null,
         token: ""
     });
+
+    useEffect(() => {
+        const data = localStorage.getItem('auth');
+        if (data) {
+            const parsedData = JSON.parse(data);
+            setAuth({
+                user: parsedData.user,
+                token: parsedData.token
+            });
+        }
+    }, []); // Empty dependency array - only run on mount
+
     return (
         <AuthContext.Provider value={[auth, setAuth]}>
             {children}
         </AuthContext.Provider>
     );
 }
+
 //custom hook
 const useAuth = () => useContext(AuthContext);
 

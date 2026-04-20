@@ -1,25 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { GiShoppingBag } from "react-icons/gi";
+import { useAuth } from '../../context/auth';
 
 const Header = () => {
-    const [user, setUser] = useState(null);
+    const [auth, setAuth] = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Check if user is logged in
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
-    }, []);
-
     const handleLogout = () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
-        setUser(null);
-        navigate('/');
+        setAuth({
+            ...auth,
+            user: null,
+            token: ""
+        });
+        localStorage.removeItem('token  ');
     };
 
     return (
@@ -46,7 +41,7 @@ const Header = () => {
                                 </NavLink>
                             </li>
 
-                            {!user ? (
+                            {!auth?.user ? (
                                 <>
                                     <li className="nav-item">
                                         <NavLink className="nav-link" to="/register" >
@@ -67,7 +62,7 @@ const Header = () => {
                                         onClick={() => setShowDropdown(!showDropdown)}
                                         style={{ textDecoration: 'none', color: 'inherit' }}
                                     >
-                                        {user.name}
+                                        {auth.user.name}
                                     </button>
                                     {showDropdown && (
                                         <ul className="dropdown-menu show" style={{ display: 'block', position: 'absolute', right: '0', left: 'auto' }}>
@@ -90,6 +85,7 @@ const Header = () => {
                                                         handleLogout();
                                                         setShowDropdown(false);
                                                     }}
+                                                    to="/login"
                                                 >
                                                     Logout
                                                 </button>

@@ -1,4 +1,3 @@
-
 import { Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import About from './pages/About'
@@ -8,12 +7,13 @@ import PageNotFound from './pages/PageNotFound';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import Profile from './pages/Profile';
+import { AuthProvider } from './context/auth';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/about' element={<About />} />
@@ -24,8 +24,7 @@ function App() {
         <Route path='/policy' element={<Policy />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
-
-    </>
+    </AuthProvider>
   );
 }
 

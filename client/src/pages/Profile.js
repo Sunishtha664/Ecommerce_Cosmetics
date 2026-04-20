@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout/Layout';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/auth';
 import './Profile.css';
 
 const Profile = () => {
-    const [user, setUser] = useState(null);
+    const [auth] = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Get user data from localStorage
-        const userData = localStorage.getItem('user');
-        if (!userData) {
+        // Redirect to login if not authenticated
+        if (!auth?.user) {
             navigate('/login');
-        } else {
-            setUser(JSON.parse(userData));
         }
-    }, [navigate]);
+    }, [auth, navigate]);
 
-    if (!user) {
+    if (!auth?.user) {
         return <Layout title="Profile" />;
     }
+
+    const user = auth.user;
 
     const getInitials = (name) => {
         return name

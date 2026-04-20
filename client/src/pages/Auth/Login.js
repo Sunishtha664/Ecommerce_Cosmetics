@@ -3,10 +3,12 @@ import Layout from '../../components/Layout/Layout';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../context/auth';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [auth, setAuth] = useAuth();
 
     const navigate = useNavigate();
 
@@ -22,9 +24,15 @@ const Login = () => {
 
             if (res.data.success) {
                 toast.success(res.data.message);
-                // Store token in localStorage
-                localStorage.setItem('authToken', res.data.token);
-                localStorage.setItem('user', JSON.stringify(res.data.user));
+                // Store in context and localStorage
+                setAuth({
+                    user: res.data.user,
+                    token: res.data.token
+                });
+                localStorage.setItem('auth', JSON.stringify({
+                    user: res.data.user,
+                    token: res.data.token
+                }));
                 navigate('/');
             } else {
                 toast.error(res.data.message);
