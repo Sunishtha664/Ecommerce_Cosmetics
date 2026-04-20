@@ -7,6 +7,7 @@ import PageNotFound from './pages/PageNotFound';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import Profile from './pages/Profile';
+import Dashboard from './pages/user/Dashboard';
 import { AuthProvider } from './context/auth';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,6 +17,7 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path='/' element={<HomePage />} />
+        <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/about' element={<About />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
