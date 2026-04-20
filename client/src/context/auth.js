@@ -13,6 +13,8 @@ const AuthProvider = ({ children }) => {
     //default axios base URL and auth header
     axios.defaults.baseURL = process.env.REACT_APP_API || '';
     axios.defaults.headers.common['Authorization'] = auth?.token ? `Bearer ${auth.token}` : '';
+
+    console.log('Auth context initialized with token:', !!auth?.token);
     useEffect(() => {
         const data = localStorage.getItem('auth');
         if (data) {
