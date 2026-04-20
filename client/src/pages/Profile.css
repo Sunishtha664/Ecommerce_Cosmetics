@@ -1,0 +1,261 @@
+/* Profile Container Styling */
+.profile-container {
+    background: linear-gradient(135deg, #f5f0ff 0%, #fff0f7 100%);
+    min-height: calc(100vh - 56px);
+    padding: 40px 20px;
+}
+
+.profile-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(196, 113, 170, 0.1);
+    overflow: hidden;
+}
+
+/* Profile Header */
+.profile-header {
+    background: linear-gradient(135deg, #8b4f9f 0%, #c471aa 100%);
+    padding: 40px 30px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    color: white;
+}
+
+.avatar-section {
+    flex-shrink: 0;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: 700;
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.header-content {
+    flex: 1;
+}
+
+.profile-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.5px;
+    color: white;
+}
+
+.profile-subtitle {
+    font-size: 14px;
+    opacity: 0.95;
+    margin: 8px 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* Profile Content */
+.profile-content {
+    padding: 40px 30px;
+}
+
+/* Info Section */
+.info-section {
+    margin-bottom: 35px;
+}
+
+.info-section:last-of-type {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #8b4f9f;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0e6ff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.info-item {
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 8px;
+    border-left: 4px solid #c471aa;
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    background: #f5f0ff;
+    transform: translateX(4px);
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8b4f9f;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+
+.info-value {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.address-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Action Section */
+.action-section {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #8b4f9f 0%, #c471aa 100%);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(196, 113, 170, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196, 113, 170, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 20px;
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+
+    .profile-title {
+        font-size: 24px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .profile-content {
+        padding: 25px 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+
+    .info-value {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-container {
+        padding: 20px 10px;
+    }
+
+    .profile-wrapper {
+        border-radius: 12px;
+    }
+
+    .profile-header {
+        padding: 25px 15px;
+    }
+
+    .avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+
+    .profile-title {
+        font-size: 20px;
+    }
+
+    .profile-subtitle {
+        font-size: 12px;
+    }
+
+    .profile-content {
+        padding: 20px 15px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .info-item {
+        padding: 12px;
+    }
+
+    .info-label {
+        font-size: 11px;
+    }
+
+    .info-value {
+        font-size: 13px;
+    }
+
+    .btn-primary {
+        padding: 10px 24px;
+        font-size: 13px;
+    }
+}
