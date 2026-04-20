@@ -4,7 +4,16 @@ import userModel from "../models/userModel.js";
 //Protect Routes token based
 export const requireSignIn = async (req, res, next) => {
     try {
-        const decode = JWT.verify(req.headers.authorization, process.env.JWT_SECRET);
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(401).send({
+                success: false,
+                message: "Authorization header missing",
+            });
+        }
+
+        const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+        const decode = JWT.verify(token, process.env.JWT_SECRET);
         req.user = decode;
         next();
     } catch (error) {
@@ -12,7 +21,7 @@ export const requireSignIn = async (req, res, next) => {
         res.status(401).send({
             success: false,
             message: "Invalid Token",
-        })
+        });
     }
 }
 
