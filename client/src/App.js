@@ -6,6 +6,7 @@ import Policy from './pages/Policy';
 import PageNotFound from './pages/PageNotFound';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 import Profile from './pages/Profile';
 import Dashboard from './pages/user/Dashboard';
 import PrivateRoute from './components/Routes/Private';
@@ -24,6 +25,7 @@ function App() {
 
         <Route path='/about' element={<About />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/login' element={<Login />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/contact' element={<Contact />} />

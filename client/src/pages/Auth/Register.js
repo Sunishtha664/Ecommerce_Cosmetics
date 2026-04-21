@@ -113,11 +113,11 @@ const Register = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="answer" className="form-label">What is your favorite color?</label>
+                            <label htmlFor="answer" className="form-label">Enter your secret code</label>
                             <input
                                 id="answer"
                                 type="text"
-                                placeholder="Your Answer"
+                                placeholder="Your Secret Code"
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
                                 required
