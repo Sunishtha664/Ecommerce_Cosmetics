@@ -10,6 +10,7 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
+    const [answer, setAnswer] = useState("");
 
     const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const Register = () => {
         try {
             const res = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/auth/register`,
-                { name, email, password, phone, address }
+                { name, email, password, phone, address, answer }
 
             );
 
@@ -107,6 +108,18 @@ const Register = () => {
                                 placeholder="Your Address"
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
+                                required
+                                className="form-input"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="answer" className="form-label">What is your favorite color?</label>
+                            <input
+                                id="answer"
+                                type="text"
+                                placeholder="Your Answer"
+                                value={answer}
+                                onChange={(e) => setAnswer(e.target.value)}
                                 required
                                 className="form-input"
                             />
