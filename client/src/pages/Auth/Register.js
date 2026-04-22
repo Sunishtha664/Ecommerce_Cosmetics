@@ -113,7 +113,7 @@ const Register = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="answer" className="form-label">Enter your secret code</label>
+                            <label htmlFor="answer" className="form-label">Create your secret code</label>
                             <input
                                 id="answer"
                                 type="text"
