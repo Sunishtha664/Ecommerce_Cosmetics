@@ -77,6 +77,14 @@ const Header = () => {
                                                     View Profile
                                                 </Link>
                                             </li>
+
+                                            <Link
+                                                className="dropdown-item"
+                                                to="/dashboard"
+                                                onClick={() => setShowDropdown(false)}
+                                            >
+                                                Dashboard
+                                            </Link>
                                             <li>
                                                 <hr className="dropdown-divider" />
                                             </li>
