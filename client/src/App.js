@@ -13,6 +13,9 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import { AuthProvider } from './context/auth';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import AdminRoute from './components/Routes/AdminRoute';
+import CreateCategory from './pages/Admin/CreateCategory';
+import CreateProduct from './pages/Admin/CreateProduct';
 
 function App() {
   return (
@@ -20,7 +23,12 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/dashboard/user' element={<Dashboard />} />
-        <Route path='/dashboard/admin' element={<AdminDashboard />} />
+
+        <Route path='/dashboard' element={<AdminRoute />}>
+          <Route path='admin' element={<AdminDashboard />} />
+          <Route path='admin/create-category' element={<CreateCategory />} />
+          <Route path='admin/create-product' element={<CreateProduct />} />
+        </Route>
         <Route path='/about' element={<About />} />
         <Route path='/register' element={<Register />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
