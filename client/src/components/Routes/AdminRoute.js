@@ -104,5 +104,5 @@ export default function AdminRoute() {
         return <Spinner message="Redirecting..." showCountdown={true} />;
     }
 
-    return ok ? <Outlet /> : <Spinner path="/login" message="Checking permissions..." />;
+    return ok ? <Outlet /> : <Spinner message="Checking permissions..." />;
 }
