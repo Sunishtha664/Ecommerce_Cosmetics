@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const Spinner = ({ message = "Loading Dashboard...", showCountdown = false }) => {
-    const [count, setCount] = useState(5);
+const Spinner = ({ path = "login", message = "Loading Dashboard...", showCountdown = false }) => {
+    const [count, setCount] = useState(3);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -10,7 +10,7 @@ const Spinner = ({ message = "Loading Dashboard...", showCountdown = false }) =>
             const interval = setInterval(() => {
                 setCount(prevValue => {
                     if (prevValue <= 1) {
-                        navigate('/login');
+                        navigate(`/${path}`);
                         return 0;
                     }
                     return prevValue - 1;

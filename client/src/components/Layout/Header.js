@@ -80,8 +80,7 @@ const Header = () => {
 
                                             <Link
                                                 className="dropdown-item"
-                                                to="/dashboard"
-                                                onClick={() => setShowDropdown(false)}
+                                                to={`/dashboard/${auth.user.role === 1 ? 'admin' : 'user'}`} onClick={() => setShowDropdown(false)}
                                             >
                                                 Dashboard
                                             </Link>

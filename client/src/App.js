@@ -10,6 +10,8 @@ import ForgotPassword from './pages/Auth/ForgotPassword';
 import Profile from './pages/Profile';
 import Dashboard from './pages/user/Dashboard';
 import PrivateRoute from './components/Routes/Private';
+import AdminRoute from './components/Routes/AdminRoute';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 import { AuthProvider } from './context/auth';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,9 +22,11 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/dashboard' element={<PrivateRoute />}>
-          <Route path='' element={<Dashboard />} />
+          <Route path='user' element={<Dashboard />} />
         </Route>
-
+        <Route path='/dashboard' element={<AdminRoute />}>
+          <Route path='admin' element={<AdminDashboard />} />
+        </Route>
         <Route path='/about' element={<About />} />
         <Route path='/register' element={<Register />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
