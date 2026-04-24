@@ -28,8 +28,17 @@ const AdminDashboard = () => {
 
     return (
         <Layout>
-            <h1>Admin Dashboard</h1>
-        </Layout>
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-3"></div>
+                    <div className="col-md-9">content</div>
+
+                </div>
+
+            </div>
+
+
+        </Layout >
     )
 }
 
