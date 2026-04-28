@@ -18,12 +18,23 @@ import CreateCategory from './pages/Admin/CreateCategory';
 import CreateProduct from './pages/Admin/CreateProduct';
 import Users from './pages/Admin/Users';
 import Orders from './pages/Admin/Orders';
+
+import UserOrders from './pages/user/Orders';
+import UserProfile from './pages/user/Profile';
+import PrivateRoute from './components/Routes/Private';
 function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='/dashboard/user' element={<Dashboard />} />
+
+        <Route path='/dashboard' element={<PrivateRoute />} >
+          <Route path='/dashboard/user' element={<Dashboard />} />
+          <Route path='/dashboard/user/orders' element={<UserOrders />} />
+          <Route path='/dashboard/user/profile' element={<UserProfile />} />
+
+
+        </Route>
 
         <Route path='/dashboard' element={<AdminRoute />}>
           <Route path='admin' element={<AdminDashboard />} />

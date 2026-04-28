@@ -4,16 +4,15 @@ import UserMenu from '../../components/Layout/UserMenu'
 
 const Orders = () => {
     return (
-        <Layout title="Dashboard-All Orders">
+        <Layout title="Dashboard-Profile">
             <div className="container-fluid" m-3 p-3>
                 <div className="row">
-
-                </div>
-                <div className="col-md-3">
-                    <UserMenu />
-                </div>
-                <div className="col-md-9">
-                    <h1>All Orders</h1>
+                    <div className="col-md-3">
+                        <UserMenu />
+                    </div>
+                    <div className="col-md-9">
+                        <h1>All Orders</h1>
+                    </div>
                 </div>
             </div>
         </Layout>
