@@ -2,9 +2,9 @@ import React from 'react'
 
 const CreateCategory = () => {
     return (
-        <div>
+        <Layout>
             <h1>Create Category</h1>
-        </div>
+        </Layout>
     )
 }
 

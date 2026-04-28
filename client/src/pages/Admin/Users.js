@@ -2,9 +2,9 @@ import React from 'react'
 
 const Users = () => {
     return (
-        <div>
-
-        </div>
+        <Layout>
+            <h1>Users Management</h1>
+        </Layout>
     )
 }
 
