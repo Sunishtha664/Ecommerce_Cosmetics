@@ -23,7 +23,7 @@ app.use(morgan('dev'));
 console.log("All middleware setup complete");
 
 app.use('/api/v1/auth', authRoute);
-app.use('/api/v1/category', categoryRoutes);
+app.use('/api/v1/category', categoryRoute);
 
 app.get('/', (req, res) => {
     res.send("API WORKING");
