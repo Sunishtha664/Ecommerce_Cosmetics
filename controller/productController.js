@@ -48,4 +48,25 @@ export const createProductController = async (req, res) => {
         })
     }
 }
+//get all products
+export const getProductController = async (req, res) => {
+    try {
+        const products = await productModel.find({}).populate("category").select("-photo").limit(12).sort({ createdAt: -1 });
+        res.status(200).send({
+            success: true,
+            totalCount: products.length,
+            message: "All products",
+            products,
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error in getting products",
+            error
+        })
+    }
+}
 
+//get single product
+export const getSingleProductController = async (req, res) => { }

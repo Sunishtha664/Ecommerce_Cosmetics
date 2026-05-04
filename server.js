@@ -25,6 +25,7 @@ console.log("All middleware setup complete");
 
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/category', categoryRoute);
+app.use('/api/v1/product', productRoute);
 
 app.get('/', (req, res) => {
     res.send("API WORKING");
