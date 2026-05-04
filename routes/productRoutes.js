@@ -1,5 +1,6 @@
 import express from 'express';
-import { createProductController } from '../controller/productController';
+import { createProductController } from '../controller/productController.js';
+import { requireSignIn, isAdmin } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
