@@ -5,7 +5,7 @@ import slugify from "slugify";
 
 export const createProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, category, quantity, shipping } = req.fields;
+        const { name, slug, description, price, category, subcategory, quantity, shipping } = req.fields;
         const { photo } = req.files;
 
         //validation
@@ -26,7 +26,7 @@ export const createProductController = async (req, res) => {
                 return res.status(500).send({ error: "Photo is required and should be less than 1mb in size" });
         }
 
-        const products = new productModel({ ...req.fields, slug: slugify(name) })
+        const products = new productModel({ ...req.fields, slug: slugify(name), subcategory });
         if (photo) {
             products.photo.data = fs.readFileSync(photo.path);
             products.photo.contentType = photo.type;
@@ -51,7 +51,7 @@ export const createProductController = async (req, res) => {
 //get all products
 export const getProductController = async (req, res) => {
     try {
-        const products = await productModel.find({}).populate("category").select("-photo").limit(12).sort({ createdAt: -1 });
+        const products = await productModel.find({}).populate("category").populate("subcategory").select("-photo").limit(12).sort({ createdAt: -1 });
         res.status(200).send({
             success: true,
             totalCount: products.length,
@@ -71,7 +71,7 @@ export const getProductController = async (req, res) => {
 //get single product
 export const getSingleProductController = async (req, res) => {
     try {
-        const product = await productModel.findOne({ slug: req.params.slug }).select("-photo").populate("category");
+        const product = await productModel.findOne({ slug: req.params.slug }).select("-photo").populate("category").populate("subcategory");
         res.status(200).send({
             success: true,
             message: "Single product",
@@ -127,7 +127,7 @@ export const deleteProductController = async (req, res) => {
 //update product
 export const updateProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, category, quantity, shipping } = req.fields;
+        const { name, slug, description, price, category, subcategory, quantity, shipping } = req.fields;
         const { photo } = req.files;
 
         //validation
@@ -142,13 +142,11 @@ export const updateProductController = async (req, res) => {
                 return res.status(500).send({ error: "Category is required" });
             case !quantity:
                 return res.status(500).send({ error: "Quantity is required" });
-            case !photo:
-                return res.status(500).send({ error: "Photo is required" });
             case photo && photo.size > 1000000:
-                return res.status(500).send({ error: "Photo is required and should be less than 1mb in size" });
+                return res.status(500).send({ error: "Photo should be less than 1mb in size" });
         }
 
-        const products = await productModel.findByIdAndUpdate(req.params.pid, { ...req.fields, slug: slugify(name) }, { new: true })
+        const products = await productModel.findByIdAndUpdate(req.params.pid, { ...req.fields, slug: slugify(name), subcategory }, { new: true })
         if (photo) {
             products.photo.data = fs.readFileSync(photo.path);
             products.photo.contentType = photo.type;
