@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProductController, getProductController, getSingleProductController } from '../controller/productController.js';
+import { createProductController, getProductController, getSingleProductController, productPhotoController } from '../controller/productController.js';
 import { requireSignIn, isAdmin } from '../middlewares/authMiddleware.js';
 import formidable from 'express-formidable';
 import { getPriority } from 'os';
@@ -14,4 +14,7 @@ router.get('/get-products', getProductController);
 
 //get single product
 router.get('/get-product/:slug', getSingleProductController);
+
+//get photo
+router.get('/product-photo/:pid', productPhotoController);
 export default router;
