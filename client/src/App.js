@@ -15,6 +15,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import AdminRoute from './components/Routes/AdminRoute';
 import CreateCategory from './pages/Admin/CreateCategory';
+import CreateSubCategory from './pages/Admin/CreateSubCategory';
 import CreateProduct from './pages/Admin/CreateProduct';
 import Users from './pages/Admin/Users';
 import Orders from './pages/Admin/Orders';
@@ -39,6 +40,7 @@ function App() {
         <Route path='/dashboard' element={<AdminRoute />}>
           <Route path='admin' element={<AdminDashboard />} />
           <Route path='admin/create-category' element={<CreateCategory />} />
+          <Route path='admin/create-subcategory' element={<CreateSubCategory />} />
           <Route path='admin/create-product' element={<CreateProduct />} />
           <Route path='admin/users' element={<Users />} />
           <Route path='admin/orders' element={<Orders />} />
