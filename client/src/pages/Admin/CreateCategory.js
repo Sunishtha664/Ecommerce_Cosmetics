@@ -4,11 +4,12 @@ import AdminMenu from '../../components/Layout/AdminMenu'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import CategoryForm from '../../components/Form/CategoryForm'
+import { Modal } from 'antd'
 
 const CreateCategory = () => {
     const [name, setName] = useState('')
     const [categories, setCategories] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [visible, setVisible] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -38,29 +39,6 @@ const CreateCategory = () => {
         } catch (error) {
             console.error(error)
             toast.error('Error fetching categories')
-        }
-    }
-
-    const handleCreateCategory = async (e) => {
-        e.preventDefault()
-        if (!name.trim()) {
-            toast.warning('Please enter a category name')
-            return
-        }
-
-        try {
-            setLoading(true)
-            const { data } = await axios.post('/api/v1/category/create-category', { name })
-            if (data.success) {
-                toast.success(`${data.category.name} created successfully`)
-                setName('')
-                getAllCategories()
-            }
-        } catch (error) {
-            console.error(error)
-            toast.error(error.response?.data?.message || 'Failed to create category')
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -99,7 +77,7 @@ const CreateCategory = () => {
                                                     <tr key={category._id}>
                                                         <td>{category.name}</td>
                                                         <td>
-                                                            <button className="btn btn-sm btn-outline-primary me-2" disabled>
+                                                            <button className="btn btn-sm btn-outline-primary me-2" onClick={() => setVisible(true)}>
                                                                 Edit
                                                             </button>
                                                             <button className="btn btn-sm btn-outline-danger" disabled>
@@ -120,6 +98,7 @@ const CreateCategory = () => {
                                 </div>
                             </div>
                         </div>
+                        <Modal onCancel={() => setVisible(false)} footer={null} open={visible}></Modal>
                     </div>
                 </div>
             </div>
