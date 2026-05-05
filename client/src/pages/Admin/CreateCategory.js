@@ -10,6 +10,8 @@ const CreateCategory = () => {
     const [name, setName] = useState('')
     const [categories, setCategories] = useState([])
     const [visible, setVisible] = useState(false)
+    const [selected, setSelected] = useState(null)
+    const [updatedName, setUpdatedName] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -46,6 +48,53 @@ const CreateCategory = () => {
         getAllCategories()
     }, [])
 
+    const handleEdit = (category) => {
+        setSelected(category)
+        setUpdatedName(category.name)
+        setVisible(true)
+    }
+
+    //update category
+    const handleUpdate = async (e) => {
+        e.preventDefault()
+        try {
+            const { data } = await axios.put(`/api/v1/category/update-category/${selected?._id}`, { name: updatedName })
+            if (data.success) {
+                toast.success(`${updatedName} updated successfully`)
+                setSelected(null)
+                setUpdatedName('')
+                setVisible(false)
+                getAllCategories()
+            }
+            else {
+                toast.error('Failed to update category')
+            }
+        }
+        catch (error) {
+            console.error(error)
+            toast.error(error.response?.data?.message || 'Failed to update category')
+        }
+    }
+
+    //delete category
+    const handleDelete = async (id, name) => {
+        try {
+            const { data } = await axios.delete(`/api/v1/category/delete-category/${id}`)
+            if (data.success) {
+                toast.success(`${name} deleted successfully`)
+                getAllCategories()
+            }
+            else {
+                toast.error('Failed to delete category')
+            }
+        }
+        catch (error) {
+            console.error(error)
+            toast.error(error.response?.data?.message || 'Failed to delete category')
+        }
+    }
+
+
     return (
         <Layout title="Dashboard - Create Category">
             <div className="container-fluid m-3 p-3">
@@ -77,10 +126,11 @@ const CreateCategory = () => {
                                                     <tr key={category._id}>
                                                         <td>{category.name}</td>
                                                         <td>
-                                                            <button className="btn btn-sm btn-outline-primary me-2" onClick={() => setVisible(true)}>
+                                                            <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(category)}>
                                                                 Edit
                                                             </button>
-                                                            <button className="btn btn-sm btn-outline-danger" disabled>
+                                                            <button className="btn btn
+                                                            -sm btn-outline-danger" onClick={() => handleDelete(category._id, category.name)}>
                                                                 Delete
                                                             </button>
                                                         </td>
@@ -98,11 +148,14 @@ const CreateCategory = () => {
                                 </div>
                             </div>
                         </div>
-                        <Modal onCancel={() => setVisible(false)} footer={null} open={visible}></Modal>
+                        <Modal onCancel={() => setVisible(false)} footer={null} open={visible}>
+
+                            <CategoryForm value={updatedName} setValue={setUpdatedName} handleSubmit={handleUpdate} />
+                        </Modal>
                     </div>
                 </div>
-            </div>
-        </Layout>
+            </div >
+        </Layout >
     )
 }
 
