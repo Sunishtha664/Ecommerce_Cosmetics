@@ -76,6 +76,26 @@ export const subcategoryController = async (req, res) => {
     }
 }
 
+//get subcategories by category
+export const getSubcategoriesByCategoryController = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+        const subcategories = await subcategoryModel.find({ parentCategory: categoryId });
+        res.status(200).send({
+            success: true,
+            message: "Subcategories fetched successfully",
+            subcategories
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error in getting subcategories",
+            error
+        })
+    }
+}
+
 //single subcategory
 export const singleSubcategoryController = async (req, res) => {
     try {

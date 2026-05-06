@@ -3,11 +3,10 @@ import Layout from '../../components/Layout/Layout'
 import AdminMenu from '../../components/Layout/AdminMenu'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import { Select } from 'antd'
-
-const { Option } = Select
+import { useNavigate } from 'react-router-dom'
 
 const CreateProduct = () => {
+    const navigate = useNavigate()
     const [categories, setCategories] = useState([])
     const [subcategories, setSubcategories] = useState([])
     const [name, setName] = useState('')
@@ -36,12 +35,12 @@ const CreateProduct = () => {
         getAllCategories()
     }, [])
 
-    //get all sub categories
-    const getAllSubcategories = async () => {
+    //get subcategories by category
+    const getSubcategoriesByCategory = async (categoryId) => {
         try {
-            const { data } = await axios.get('/api/v1/subcategory/get-subcategory')
+            const { data } = await axios.get(`/api/v1/subcategory/get-subcategories/${categoryId}`)
             if (data?.success) {
-                setSubcategories(data?.subcategory)
+                setSubcategories(data?.subcategories)
             }
         } catch (error) {
             console.error(error)
@@ -49,54 +48,153 @@ const CreateProduct = () => {
         }
     }
 
-    useEffect(() => {
-        getAllSubcategories()
-    }, [])
+    //handle category change
+    const handleCategoryChange = (value) => {
+        setCategory(value)
+        setSubcategory('') // clear subcategory when category changes
+        if (value) {
+            getSubcategoriesByCategory(value)
+        } else {
+            setSubcategories([])
+        }
+    }
+
+    //create product function
+    const handleCreate = async (e) => {
+        e.preventDefault()
+
+        if (!name || !description || !price || !quantity || !category || shipping === '' || !photo) {
+            return toast.error('Please fill in all required fields and upload a product image')
+        }
+
+        if (subcategories.length > 0 && !subcategory) {
+            return toast.error('Please select a subcategory for the chosen category')
+        }
+
+        try {
+            const productData = new FormData()
+            productData.append('name', name)
+            productData.append('description', description)
+            productData.append('price', Number(price))
+            productData.append('quantity', Number(quantity))
+            productData.append('shipping', shipping === '1')
+            productData.append('category', category)
+            if (subcategory) productData.append('subcategory', subcategory)
+            productData.append('photo', photo)
+
+            const { data } = await axios.post('/api/v1/product/create-product', productData)
+            console.log('Create product response', data)
+            if (data?.success) {
+                toast.success('Product created successfully')
+                navigate('/dashboard/admin/products')
+            } else {
+                toast.error(data?.message || 'Error creating product')
+            }
+        } catch (error) {
+            console.error('Create product error', error?.response || error)
+            toast.error(error.response?.data?.message || error.response?.data?.error || error.message || 'Error creating product')
+        }
+    }
+
 
     return (
         <Layout title="Dashboard-Create Product">
-            <div className="container-fluid" m-3 p-3>
+            <div className="container-fluid m-3 p-3">
                 <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-3 mb-4">
                         <AdminMenu />
                     </div>
                     <div className="col-md-9">
-                        <h1>Create Product</h1>
-                        <div className="m-1 w-75">
+                        <div className="card shadow-sm">
+                            <div className="card-body">
+                                <h2 className="card-title mb-3">Create Product</h2>
+                                <form onSubmit={handleCreate} className="p-3 w-75">
+                                    <div className="mb-3">
+                                        <select
+                                            className="form-select"
+                                            value={category}
+                                            onChange={(e) => handleCategoryChange(e.target.value)}
+                                        >
+                                            <option value="">Select category</option>
+                                            {categories?.map((c) => (
+                                                <option key={c._id} value={c._id}>{c.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <select
+                                            className="form-select"
+                                            value={subcategory}
+                                            onChange={(e) => setSubcategory(e.target.value)}
+                                            disabled={!category || subcategories.length === 0}
+                                        >
+                                            <option value="">Select subcategory</option>
+                                            {subcategories?.map((s) => (
+                                                <option key={s._id} value={s._id}>{s.name}</option>
+                                            ))}
+                                        </select>
+                                        <small className="text-muted">
+                                            {!category ? 'Select a category first to see subcategories.' : subcategories.length ? 'Choose the matching subcategory.' : 'No subcategories exist for this category.'}
+                                        </small>
+                                    </div>
 
-                            <Select bordered={false} placeholder="Select a category" size="large" showSearch className='form-select mb-3'
-                                onChange={(value) => {
-                                    setCategory(value)
-                                }}
-                            >
-                                {categories?.map((c) => (
-                                    <Option key={c._id} value={c._id}>{c.name}</Option>
-                                ))}
-                            </Select>
-                            <Select bordered={false} placeholder="Select a subcategory" size="large" showSearch className='form-select mb-3'
-                                onChange={(value) => {
-                                    setSubcategory(value)
-                                }}
-                            >
-                                {subcategories?.map((s) => (
-                                    <Option key={s._id} value={s._id}>{s.name}</Option>
-                                ))}
-                            </Select>
+                                    <div className="mb-3">
+                                        <label className="btn btn-outline-secondary col-md-12">
+                                            {photo ? photo.name : "Upload Product Image"}
+                                            <input type="file" name="photo" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} hidden />
+                                        </label>
+                                    </div>
+                                    <div className="mb-3">
+                                        {photo && (
+                                            <div className="text-center">
+                                                <img
+                                                    src={URL.createObjectURL(photo)}
+                                                    alt="Product"
+                                                    height={"200px"}
+                                                    className="img img-responsive"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Name</label>
+                                        <input type="text" value={name} placeholder="Write a name" className="form-control" onChange={(e) => setName(e.target.value)} />
+                                    </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="upload images" className="btn btn-outline-secondary col-md-12">
-
-                                    {photo ? photo.name : "Upload Product Image"}
-                                    <input type="file" name="photo" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} hidden />
-                                </label>
+                                    <div className="mb-3">
+                                        <label className="form-label">Description</label>
+                                        <textarea required value={description} placeholder="Write a description" className="form-control" onChange={(e) => setDescription(e.target.value)} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Price</label>
+                                        <input required type="number" min="0" value={price} placeholder="Write price in numbers" className="form-control" onChange={(e) => setPrice(e.target.value)} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Quantity</label>
+                                        <input required type="number" min="0" value={quantity} placeholder="Write quantity in numbers" className="form-control" onChange={(e) => setQuantity(e.target.value)} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Shipping</label>
+                                        <select
+                                            className="form-select"
+                                            value={shipping}
+                                            onChange={(e) => setShipping(e.target.value)}
+                                        >
+                                            <option value="">Select Shipping</option>
+                                            <option value="0">No</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <button type="submit" className="btn btn-primary">Create Product</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
-        </Layout>
+        </Layout >
     )
 }
 

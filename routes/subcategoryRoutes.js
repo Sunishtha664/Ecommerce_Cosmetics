@@ -1,5 +1,5 @@
 import express from 'express';
-import { subcategoryController, createSubcategoryController, deleteSubcategoryController, singleSubcategoryController, updateSubcategoryController } from '../controller/subcategoryController.js';
+import { subcategoryController, createSubcategoryController, deleteSubcategoryController, singleSubcategoryController, updateSubcategoryController, getSubcategoriesByCategoryController } from '../controller/subcategoryController.js';
 import { isAdmin, requireSignIn } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -14,6 +14,9 @@ router.put('/update-subcategory/:id', requireSignIn, isAdmin, updateSubcategoryC
 
 //getAll subcategory
 router.get('/get-subcategory', subcategoryController);
+
+//get subcategories by category
+router.get('/get-subcategories/:categoryId', getSubcategoriesByCategoryController);
 
 //single subcategory
 router.get('/single-subcategory/:slug', singleSubcategoryController);

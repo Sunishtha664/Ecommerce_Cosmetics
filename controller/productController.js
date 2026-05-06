@@ -14,19 +14,31 @@ export const createProductController = async (req, res) => {
                 return res.status(500).send({ error: "Name is required" });
             case !description:
                 return res.status(500).send({ error: "Description is required" });
-            case !price:
+            case price === undefined || price === null || price === '':
                 return res.status(500).send({ error: "Price is required" });
             case !category:
                 return res.status(500).send({ error: "Category is required" });
-            case !quantity:
+            case quantity === undefined || quantity === null || quantity === '':
                 return res.status(500).send({ error: "Quantity is required" });
+            case shipping === undefined || shipping === null || shipping === '':
+                return res.status(500).send({ error: "Shipping is required" });
             case !photo:
                 return res.status(500).send({ error: "Photo is required" });
             case photo && photo.size > 1000000:
                 return res.status(500).send({ error: "Photo is required and should be less than 1mb in size" });
         }
 
-        const products = new productModel({ ...req.fields, slug: slugify(name), subcategory });
+        const products = new productModel({
+            name,
+            slug: slugify(name),
+            description,
+            price: Number(price),
+            category,
+            subcategory,
+            quantity: Number(quantity),
+            shipping: shipping === '1' || shipping === 1 || shipping === true,
+        });
+
         if (photo) {
             products.photo.data = fs.readFileSync(photo.path);
             products.photo.contentType = photo.type;
@@ -136,17 +148,28 @@ export const updateProductController = async (req, res) => {
                 return res.status(500).send({ error: "Name is required" });
             case !description:
                 return res.status(500).send({ error: "Description is required" });
-            case !price:
+            case price === undefined || price === null || price === '':
                 return res.status(500).send({ error: "Price is required" });
             case !category:
                 return res.status(500).send({ error: "Category is required" });
-            case !quantity:
+            case quantity === undefined || quantity === null || quantity === '':
                 return res.status(500).send({ error: "Quantity is required" });
+            case shipping === undefined || shipping === null || shipping === '':
+                return res.status(500).send({ error: "Shipping is required" });
             case photo && photo.size > 1000000:
                 return res.status(500).send({ error: "Photo should be less than 1mb in size" });
         }
 
-        const products = await productModel.findByIdAndUpdate(req.params.pid, { ...req.fields, slug: slugify(name), subcategory }, { new: true })
+        const products = await productModel.findByIdAndUpdate(req.params.pid, {
+            name,
+            slug: slugify(name),
+            description,
+            price: Number(price),
+            category,
+            subcategory,
+            quantity: Number(quantity),
+            shipping: shipping === '1' || shipping === 1 || shipping === true,
+        }, { new: true })
         if (photo) {
             products.photo.data = fs.readFileSync(photo.path);
             products.photo.contentType = photo.type;
