@@ -98,7 +98,7 @@ const CreateProduct = () => {
 
 
     return (
-        <Layout title="Dashboard-Create Product">
+        <Layout title="Dashboard - Create Product">
             <div className="container-fluid m-3 p-3">
                 <div className="row">
                     <div className="col-md-3 mb-4">
@@ -110,6 +110,7 @@ const CreateProduct = () => {
                                 <h2 className="card-title mb-3">Create Product</h2>
                                 <form onSubmit={handleCreate} className="p-3 w-75">
                                     <div className="mb-3">
+                                        <label className="form-label fw-bold">Category</label>
                                         <select
                                             className="form-select"
                                             value={category}
@@ -122,6 +123,7 @@ const CreateProduct = () => {
                                         </select>
                                     </div>
                                     <div className="mb-3">
+                                        <label className="form-label fw-bold">Subcategory</label>
                                         <select
                                             className="form-select"
                                             value={subcategory}
@@ -133,14 +135,15 @@ const CreateProduct = () => {
                                                 <option key={s._id} value={s._id}>{s.name}</option>
                                             ))}
                                         </select>
-                                        <small className="text-muted">
+                                        <small className="form-text text-muted">
                                             {!category ? 'Select a category first to see subcategories.' : subcategories.length ? 'Choose the matching subcategory.' : 'No subcategories exist for this category.'}
                                         </small>
                                     </div>
 
                                     <div className="mb-3">
+                                        <label className="form-label fw-bold">Product Image</label>
                                         <label className="btn btn-outline-secondary col-md-12">
-                                            {photo ? photo.name : "Upload Product Image"}
+                                            {photo ? photo.name : 'Upload Product Image'}
                                             <input type="file" name="photo" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} hidden />
                                         </label>
                                     </div>
@@ -150,31 +153,33 @@ const CreateProduct = () => {
                                                 <img
                                                     src={URL.createObjectURL(photo)}
                                                     alt="Product"
-                                                    height={"200px"}
-                                                    className="img img-responsive"
+                                                    className="img-fluid rounded"
+                                                    style={{ maxHeight: '220px' }}
                                                 />
                                             </div>
                                         )}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label">Name</label>
+                                        <label className="form-label fw-bold">Name</label>
                                         <input type="text" value={name} placeholder="Write a name" className="form-control" onChange={(e) => setName(e.target.value)} />
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="form-label">Description</label>
+                                        <label className="form-label fw-bold">Description</label>
                                         <textarea required value={description} placeholder="Write a description" className="form-control" onChange={(e) => setDescription(e.target.value)} />
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Price</label>
-                                        <input required type="number" min="0" value={price} placeholder="Write price in numbers" className="form-control" onChange={(e) => setPrice(e.target.value)} />
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label fw-bold">Price</label>
+                                            <input required type="number" min="0" value={price} placeholder="Write price in numbers" className="form-control" onChange={(e) => setPrice(e.target.value)} />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label className="form-label fw-bold">Quantity</label>
+                                            <input required type="number" min="0" value={quantity} placeholder="Write quantity in numbers" className="form-control" onChange={(e) => setQuantity(e.target.value)} />
+                                        </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label">Quantity</label>
-                                        <input required type="number" min="0" value={quantity} placeholder="Write quantity in numbers" className="form-control" onChange={(e) => setQuantity(e.target.value)} />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Shipping</label>
+                                        <label className="form-label fw-bold">Shipping</label>
                                         <select
                                             className="form-select"
                                             value={shipping}
