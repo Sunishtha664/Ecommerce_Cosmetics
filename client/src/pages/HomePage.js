@@ -70,6 +70,14 @@ const HomePage = () => {
                             </div>
                         ))}
                     </div>
+                    <h4 className="text-center">Filter By Price</h4>
+                    <div className="d-flex flex-column">
+                        {categories?.map((c) => (
+                            <div key={c._id} onChange={(e) => handleFilter(e.target.checked, c._id)}>
+                                <Checkbox>{c.name}</Checkbox>
+                            </div>
+                        ))}
+                    </div>
                 </div>
                 <div className="col-md-9">
                     {JSON.stringify(checked, null, 4)}
@@ -89,7 +97,7 @@ const HomePage = () => {
                                     <h5 className="card-title">{p.name}</h5>
                                     <p className="card-text">{p.description?.substring(0, 30)}...</p>
                                     <p className="card-text">Price: रु{p.price}</p>
-                                    <button className="btn btn-primary ms-1">More Details</button>
+                                    <button className="btn btn-primary ms-1 width-100">More Details</button>
                                     <button className="btn btn-secondary ms-1">ADD TO CART</button>
                                 </div>
                             </div>
