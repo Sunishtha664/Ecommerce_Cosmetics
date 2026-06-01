@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Checkbox } from 'antd';
 
 const HomePage = () => {
+    const API = process.env.REACT_APP_API || ''
 
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -16,7 +17,8 @@ const HomePage = () => {
         try {
             const res = await axios.get('/api/v1/category/get-category');
             if (res.data?.success) {
-                setCategories(res.data?.categories);
+                // API returns 'category' (singular) as the payload key
+                setCategories(res.data?.category || []);
             }
         } catch (error) {
             console.log(error);
@@ -26,9 +28,10 @@ const HomePage = () => {
     //get all products
     const getAllProducts = async () => {
         try {
-            const res = await axios.get('/api/v1/product/get-product');
+            // correct endpoint is get-products
+            const res = await axios.get('/api/v1/product/get-products');
             if (res.data?.success) {
-                setProducts(res.data?.products);
+                setProducts(res.data?.products || []);
             }
         } catch (error) {
             console.log(error);
@@ -75,12 +78,17 @@ const HomePage = () => {
 
                         {products?.map((p) => (
 
-                            <div className="card m-2" style={{ width: '18rem' }}>
-                                <img src={`/api/v1/product/product-photo/${p._id}`} className="card-img-top" alt={p.name} />
+                            <div key={p._id} className="card m-2" style={{ width: '18rem' }}>
+                                <img
+                                    src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
+                                    className="card-img-top"
+                                    alt={p.name}
+                                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/286x180?text=No+Image' }}
+                                />
                                 <div className="card-body">
                                     <h5 className="card-title">{p.name}</h5>
-                                    <p className="card-text">{p.description.substring(0, 30)}...</p>
-                                    <p className="card-text">Price: ${p.price}</p>
+                                    <p className="card-text">{p.description?.substring(0, 30)}...</p>
+                                    <p className="card-text">Price: रु{p.price}</p>
                                     <button className="btn btn-primary ms-1">More Details</button>
                                     <button className="btn btn-secondary ms-1">ADD TO CART</button>
                                 </div>

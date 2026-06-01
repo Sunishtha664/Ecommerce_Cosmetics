@@ -226,7 +226,7 @@ const Products = () => {
                                                         </td>
                                                         <td>{product.category?.name || '—'}</td>
                                                         <td>{product.subcategory?.name || '—'}</td>
-                                                        <td>₹{product.price}</td>
+                                                        <td>रु{product.price}</td>
                                                         <td>{product.quantity}</td>
                                                         <td>
                                                             <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(product)}>
