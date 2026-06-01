@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast'
 import { Modal } from 'antd'
 
 const Products = () => {
+    const API = process.env.REACT_APP_API || ''
     const [products, setProducts] = useState([])
     const navigate = useNavigate()
     const [categories, setCategories] = useState([])
@@ -93,7 +94,7 @@ const Products = () => {
         setQuantity(product.quantity || '')
         setShipping(product.shipping ? '1' : '0')
         setPhoto(null)
-        setPhotoPreview(`/api/v1/product/product-photo/${product._id}?${Date.now()}`)
+        setPhotoPreview(`${API}/api/v1/product/product-photo/${product._id}?${Date.now()}`)
 
         if (product.category?._id) {
             getSubcategoriesByCategory(product.category._id)
@@ -210,7 +211,7 @@ const Products = () => {
                                                         <td>
                                                             <div className="d-flex align-items-center gap-2">
                                                                 <img
-                                                                    src={`/api/v1/product/product-photo/${product._id}?${Date.now()}`}
+                                                                    src={`${API}/api/v1/product/product-photo/${product._id}?${Date.now()}`}
                                                                     alt={product.name}
                                                                     style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }}
                                                                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/60?text=No+Image' }}
