@@ -12,6 +12,9 @@ const HomePage = () => {
     const [categories, setCategories] = useState([]);
     const [checked, setChecked] = useState([]);
     const [radio, setRadio] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
 
 
     //get all categories
@@ -30,12 +33,47 @@ const HomePage = () => {
     //get all products
     const getAllProducts = async () => {
         try {
+            setLoading(true);
             // correct endpoint is get-products
-            const res = await axios.get('/api/v1/product/get-products');
+            const res = await axios.get(`/api/v1/product/product-list/${page}`);
+            setLoading(false);
             if (res.data?.success) {
                 setProducts(res.data?.products || []);
             }
         } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    }
+
+    //getTotal count
+    const getTotal = async () => {
+        try {
+            const res = await axios.get('/api/v1/product/product-count');
+            if (res.data?.success) {
+                setTotal(res.data?.total || 0);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        if (page === 1) return;
+        loadMore();
+    }, [page]);
+
+    //load more
+    const loadMore = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`/api/v1/product/product-list/${page}`);
+            setLoading(false);
+            if (res.data?.success) {
+                setProducts([...products, ...(res.data?.products || [])]);
+            }
+        } catch (error) {
+            setLoading(false);
             console.log(error);
         }
     }
@@ -53,11 +91,32 @@ const HomePage = () => {
     }
 
     useEffect(() => {
-        getAllProducts();
-        getAllCategories();
-    }, []);
+        if (!checked.length || !radio.length) {
+            getAllProducts();
+            getAllCategories();
+            getTotal();
+        }
+    }, [checked.length, radio.length]);
 
-
+    useEffect(() => {
+        if (checked.length || radio.length) {
+            filteredProduct();
+        }
+        else {
+            getAllProducts();
+        }
+    }, [checked, radio]);
+    //get filtered product
+    const filteredProduct = async () => {
+        try {
+            const res = await axios.post('/api/v1/product/product-filters', { checked, radio });
+            if (res.data?.success) {
+                setProducts(res.data?.products || []);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
     return (
@@ -83,9 +142,13 @@ const HomePage = () => {
                             ))}
                         </Radio.Group>
                     </div>
+
+                    <div className="d-flex flex-column">
+                        <button className="btn btn-danger" onClick={() => window.location.reload()}>Reset Filters</button>
+                    </div>
                 </div>
                 <div className="col-md-9">
-                    {JSON.stringify(radio, null, 4)}
+
                     <h1 className="text-center">All Products</h1>
                     <div className="d-flex flex-wrap">
 
@@ -108,6 +171,20 @@ const HomePage = () => {
                             </div>
 
                         ))}
+                    </div>
+
+                    <div className="m-2 p-3">
+
+                        {products && products.length < total && (
+                            <button className="btn btn-warning" onClick={(e) => {
+                                e.preventDefault();
+                                setPage(page + 1);
+
+                            }}>
+                                {loading ? "Loading..." : "Load More"}
+                            </button>
+
+                        )}
                     </div>
                 </div>
             </div>
