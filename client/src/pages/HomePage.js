@@ -3,7 +3,7 @@ import Layout from '../components/Layout/Layout'
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Checkbox, Radio } from 'antd';
-import { Prices } from '../components/Prices';
+import { Prices } from '../components/Routes/Prices';
 
 const HomePage = () => {
     const API = process.env.REACT_APP_API || ''
@@ -67,13 +67,13 @@ const HomePage = () => {
                     <h4 className="text-center">Filter By Category</h4>
                     <div className="d-flex flex-column">
                         {categories?.map((c) => (
-                            <div key={c._id} onChange={(e) => handleFilter(e.target.checked, c._id)}>
-                                <Checkbox>{c.name}</Checkbox>
+                            <div key={c._id}>
+                                <Checkbox onChange={(e) => handleFilter(e.target.checked, c._id)}>{c.name}</Checkbox>
                             </div>
                         ))}
                     </div>
-                    // Price Filter
-                    <h4 className="text-center">Filter By Price</h4>
+                    {/* Price Filter */}
+                    <h4 className="text-center mt-4">Filter By Price</h4>
                     <div className="d-flex flex-column">
                         <Radio.Group onChange={(e) => setRadio(e.target.value)}>
                             {Prices?.map((p) => (
@@ -85,7 +85,7 @@ const HomePage = () => {
                     </div>
                 </div>
                 <div className="col-md-9">
-                    {JSON.stringify(checked, null, 4)}
+                    {JSON.stringify(radio, null, 4)}
                     <h1 className="text-center">All Products</h1>
                     <div className="d-flex flex-wrap">
 
