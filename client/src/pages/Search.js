@@ -10,7 +10,7 @@ const Search = () => {
             <div className="container">
                 <div className="text-center">
                     <h1>Search Results</h1>
-                    <h6>{values?.results?.length > 0 ? `Found ${values.results.length} products` : 'No products found'}</h6>
+                    <h6>{values?.results.length < 1 ? 'No products found' : `${values?.results.length} products found`}</h6>
                 </div>
             </div>
 
