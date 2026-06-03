@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { GiShoppingBag } from "react-icons/gi";
 import { useAuth } from '../../context/auth';
+import SearchInput from '../Form/SearchInput';
 
 
 const Header = () => {
@@ -32,6 +33,7 @@ const Header = () => {
                         </Link>
 
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                            <SearchInput />
                             <li className="nav-item">
                                 <NavLink className="nav-link " to="/" >
                                     Home
