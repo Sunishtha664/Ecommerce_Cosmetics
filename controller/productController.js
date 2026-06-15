@@ -262,11 +262,21 @@ export const productListController = async (req, res) => {
 //search product
 export const searchProductController = async (req, res) => {
     try {
-        const { keyword } = req.params;
+        const keyword = (req.params.keyword || '').trim();
+
+        if (!keyword) {
+            return res.status(400).send({
+                success: false,
+                message: "Keyword is required",
+                results: []
+            });
+        }
+
+        const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const results = await productModel.find({
             $or: [
-                { name: { $regex: keyword, $options: "i" } },
-                { description: { $regex: keyword, $options: "i" } },
+                { name: { $regex: escapedKeyword, $options: "i" } },
+                { description: { $regex: escapedKeyword, $options: "i" } },
             ]
         }).select("-photo");
         res.status(200).send({
