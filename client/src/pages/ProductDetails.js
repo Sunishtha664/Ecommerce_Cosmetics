@@ -10,6 +10,7 @@ const ProductDetails = () => {
     const [product, setProduct] = useState({})
     const navigate = useNavigate()
     const [relatedProducts, setRelatedProducts] = useState([])
+    const API = process.env.REACT_APP_API || ''
 
     //initial p details
     useEffect(() => {
@@ -24,7 +25,6 @@ const ProductDetails = () => {
             setProduct(res.data?.product || {});
             if (res.data?.success) {
                 setProduct(res.data?.product || {});
-                getSimilarProducts(res.data?.product?._id, res.data?.product?.category);
             }
         }
         catch (error) {
@@ -47,14 +47,16 @@ const ProductDetails = () => {
     }
 
     useEffect(() => {
-        if (product?._id) getSimilarProducts()
-    }, [product?._id])
+        if (product?._id && product?.category?._id) {
+            getSimilarProducts(product._id, product.category._id)
+        }
+    }, [product?._id, product?.category?._id])
 
     return (
         <Layout>
             <div className="row container mt-2">
                 <div className="col-md-6">
-                    <img src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                    <img src={`${API}/api/v1/product/product-photo/${product._id}`}
                         className="card-img-top" alt={product.name} height="400px" width="150px" />
 
 
@@ -64,6 +66,7 @@ const ProductDetails = () => {
                     <h1 className="text-center">Product Details</h1>
                     <h4>Name : {product.name}</h4>
                     <h4>Description : {product.description}</h4>
+                    <h4>Brand : {product.brand}</h4>
                     <h4>Price : रु{product.price}</h4>
                     <h4>Category : {product?.category?.name}</h4>
                     <h4>Subcategory : {product?.subcategory?.name}</h4>
@@ -78,7 +81,7 @@ const ProductDetails = () => {
                         {relatedProducts?.map((p) => (
                             <div key={p._id} className="card m-2" style={{ width: '18rem' }}>
                                 <img
-                                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
+                                    src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
                                     className="card-img-top"
                                     alt={p.name}
                                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/286x180?text=No+Image' }}

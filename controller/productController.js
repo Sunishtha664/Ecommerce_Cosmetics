@@ -5,7 +5,7 @@ import slugify from "slugify";
 
 export const createProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, category, subcategory, quantity, shipping } = req.fields;
+        const { name, slug, description, brand, price, category, subcategory, quantity, shipping } = req.fields;
         const { photo } = req.files;
 
         //validation
@@ -14,6 +14,8 @@ export const createProductController = async (req, res) => {
                 return res.status(500).send({ error: "Name is required" });
             case !description:
                 return res.status(500).send({ error: "Description is required" });
+            case !brand:
+                return res.status(500).send({ error: "Brand is required" });
             case price === undefined || price === null || price === '':
                 return res.status(500).send({ error: "Price is required" });
             case !category:
@@ -32,6 +34,7 @@ export const createProductController = async (req, res) => {
             name,
             slug: slugify(name),
             description,
+            brand,
             price: Number(price),
             category,
             subcategory,
@@ -139,7 +142,7 @@ export const deleteProductController = async (req, res) => {
 //update product
 export const updateProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, category, subcategory, quantity, shipping } = req.fields;
+        const { name, slug, description, brand, price, category, subcategory, quantity, shipping } = req.fields;
         const { photo } = req.files;
 
         //validation
@@ -148,6 +151,8 @@ export const updateProductController = async (req, res) => {
                 return res.status(500).send({ error: "Name is required" });
             case !description:
                 return res.status(500).send({ error: "Description is required" });
+            case !brand:
+                return res.status(500).send({ error: "Brand is required" });
             case price === undefined || price === null || price === '':
                 return res.status(500).send({ error: "Price is required" });
             case !category:
@@ -164,6 +169,7 @@ export const updateProductController = async (req, res) => {
             name,
             slug: slugify(name),
             description,
+            brand,
             price: Number(price),
             category,
             subcategory,

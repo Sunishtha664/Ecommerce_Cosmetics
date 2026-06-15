@@ -13,10 +13,16 @@ const CreateCategory = () => {
     const [selected, setSelected] = useState(null)
     const [updatedName, setUpdatedName] = useState('')
 
+    const getAuthConfig = () => {
+        const authData = localStorage.getItem('auth')
+        const token = authData ? JSON.parse(authData)?.token : ''
+        return token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const { data } = await axios.post('/api/v1/category/create-category', { name })
+            const { data } = await axios.post('/api/v1/category/create-category', { name }, getAuthConfig())
             if (data?.success) {
                 toast.success(`${data.category.name} created successfully`)
                 setName('')
@@ -58,7 +64,7 @@ const CreateCategory = () => {
     const handleUpdate = async (e) => {
         e.preventDefault()
         try {
-            const { data } = await axios.put(`/api/v1/category/update-category/${selected?._id}`, { name: updatedName })
+            const { data } = await axios.put(`/api/v1/category/update-category/${selected?._id}`, { name: updatedName }, getAuthConfig())
             if (data.success) {
                 toast.success(`${updatedName} updated successfully`)
                 setSelected(null)
@@ -79,7 +85,7 @@ const CreateCategory = () => {
     //delete category
     const handleDelete = async (id, name) => {
         try {
-            const { data } = await axios.delete(`/api/v1/category/delete-category/${id}`)
+            const { data } = await axios.delete(`/api/v1/category/delete-category/${id}`, getAuthConfig())
             if (data.success) {
                 toast.success(`${name} deleted successfully`)
                 getAllCategories()

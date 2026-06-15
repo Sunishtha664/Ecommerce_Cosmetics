@@ -7,10 +7,16 @@ import { useNavigate } from 'react-router-dom'
 
 const CreateProduct = () => {
     const navigate = useNavigate()
+    const getAuthConfig = () => {
+        const authData = localStorage.getItem('auth')
+        const token = authData ? JSON.parse(authData)?.token : ''
+        return token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    }
     const [categories, setCategories] = useState([])
     const [subcategories, setSubcategories] = useState([])
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
+    const [brand, setBrand] = useState('')
     const [price, setPrice] = useState('')
     const [category, setCategory] = useState('')
     const [subcategory, setSubcategory] = useState('')
@@ -63,7 +69,7 @@ const CreateProduct = () => {
     const handleCreate = async (e) => {
         e.preventDefault()
 
-        if (!name || !description || !price || !quantity || !category || shipping === '' || !photo) {
+        if (!name || !description || !brand || !price || !quantity || !category || shipping === '' || !photo) {
             return toast.error('Please fill in all required fields and upload a product image')
         }
 
@@ -75,6 +81,7 @@ const CreateProduct = () => {
             const productData = new FormData()
             productData.append('name', name)
             productData.append('description', description)
+            productData.append('brand', brand)
             productData.append('price', Number(price))
             productData.append('quantity', Number(quantity))
             productData.append('shipping', shipping === '1')
@@ -82,7 +89,7 @@ const CreateProduct = () => {
             if (subcategory) productData.append('subcategory', subcategory)
             productData.append('photo', photo)
 
-            const { data } = await axios.post('/api/v1/product/create-product', productData)
+            const { data } = await axios.post('/api/v1/product/create-product', productData, getAuthConfig())
             console.log('Create product response', data)
             if (data?.success) {
                 toast.success('Product created successfully')
@@ -167,6 +174,10 @@ const CreateProduct = () => {
                                     <div className="mb-3">
                                         <label className="form-label fw-bold">Description</label>
                                         <textarea required value={description} placeholder="Write a description" className="form-control" onChange={(e) => setDescription(e.target.value)} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label fw-bold">Brand</label>
+                                        <input type="text" value={brand} placeholder="Write brand name" className="form-control" onChange={(e) => setBrand(e.target.value)} />
                                     </div>
                                     <div className="row">
                                         <div className="col-md-6 mb-3">

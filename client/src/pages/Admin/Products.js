@@ -8,12 +8,18 @@ import { Modal } from 'antd'
 
 const Products = () => {
     const API = process.env.REACT_APP_API || ''
+    const getAuthConfig = () => {
+        const authData = localStorage.getItem('auth')
+        const token = authData ? JSON.parse(authData)?.token : ''
+        return token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    }
     const [products, setProducts] = useState([])
     const navigate = useNavigate()
     const [categories, setCategories] = useState([])
     const [subcategories, setSubcategories] = useState([])
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
+    const [brand, setBrand] = useState('')
     const [price, setPrice] = useState('')
     const [category, setCategory] = useState('')
     const [subcategory, setSubcategory] = useState('')
@@ -74,6 +80,7 @@ const Products = () => {
     const resetForm = () => {
         setName('')
         setDescription('')
+        setBrand('')
         setPrice('')
         setCategory('')
         setSubcategory('')
@@ -88,6 +95,7 @@ const Products = () => {
         setSelectedProduct(product)
         setName(product.name || '')
         setDescription(product.description || '')
+        setBrand(product.brand || '')
         setPrice(product.price || '')
         setCategory(product.category?._id || '')
         setSubcategory(product.subcategory?._id || '')
@@ -106,8 +114,8 @@ const Products = () => {
         e.preventDefault()
         if (!selectedProduct) return
 
-        if (!name || !description || !price || !quantity || !category || shipping === '') {
-            toast.error('Please fill in all required fields (Name, Description, Price, Quantity, Category, Shipping)')
+        if (!name || !description || !brand || !price || !quantity || !category || shipping === '') {
+            toast.error('Please fill in all required fields (Name, Description, Brand, Price, Quantity, Category, Shipping)')
             return
         }
 
@@ -120,6 +128,7 @@ const Products = () => {
             const formData = new FormData()
             formData.append('name', name.trim())
             formData.append('description', description.trim())
+            formData.append('brand', brand.trim())
             formData.append('price', parseFloat(price))
             formData.append('quantity', parseInt(quantity))
             formData.append('shipping', shipping === '1' ? true : false)
@@ -131,7 +140,7 @@ const Products = () => {
                 formData.append('photo', photo)
             }
 
-            const { data } = await axios.put(`/api/v1/product/update-product/${selectedProduct._id}`, formData)
+            const { data } = await axios.put(`/api/v1/product/update-product/${selectedProduct._id}`, formData, getAuthConfig())
             if (data?.success) {
                 toast.success('Product updated successfully!')
                 setVisible(false)
@@ -152,7 +161,7 @@ const Products = () => {
         if (!confirmed) return
 
         try {
-            const { data } = await axios.delete(`/api/v1/product/delete-product/${id}`)
+            const { data } = await axios.delete(`/api/v1/product/delete-product/${id}`, getAuthConfig())
             if (data?.success) {
                 toast.success(`${name} deleted successfully`)
                 getAllProducts()
@@ -303,6 +312,17 @@ const Products = () => {
                                 className="form-control"
                                 rows="4"
                                 onChange={(e) => setDescription(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Brand *</label>
+                            <input
+                                type="text"
+                                value={brand}
+                                className="form-control"
+                                onChange={(e) => setBrand(e.target.value)}
                                 required
                             />
                         </div>
