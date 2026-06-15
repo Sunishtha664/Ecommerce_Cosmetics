@@ -25,11 +25,13 @@ import UserOrders from './pages/user/Orders';
 import UserProfile from './pages/user/Profile';
 import PrivateRoute from './components/Routes/Private';
 import Search from './pages/Search';
+import ProductDetails from './pages/ProductDetails';
 function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route path='/' element={<HomePage />} />
+        <Route path='/product/:slug ' element={<ProductDetails />} />
         <Route path='/search' element={<Search />} />
 
         <Route path='/dashboard' element={<PrivateRoute />} >
