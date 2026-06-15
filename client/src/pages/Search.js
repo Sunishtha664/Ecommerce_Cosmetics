@@ -4,12 +4,14 @@ import { useSearch } from '../context/search'
 import axios from 'axios'
 import { Checkbox, Radio } from 'antd'
 import { Prices } from '../components/Routes/Prices'
+import { useNavigate } from 'react-router-dom'
 
 
 const Search = () => {
     const [values] = useSearch()
     const results = Array.isArray(values?.results) ? values.results : []
     const API = process.env.REACT_APP_API || ''
+    const navigate = useNavigate()
     const [categories, setCategories] = useState([])
     const [checked, setChecked] = useState([])
     const [radio, setRadio] = useState([])
@@ -118,7 +120,7 @@ const Search = () => {
                                     <h5 className="card-title">{p.name}</h5>
                                     <p className="card-text">{p.description?.substring(0, 30)}...</p>
                                     <p className="card-text">Price: रु{p.price}</p>
-                                    <button className="btn btn-primary ms-1 width-100">More Details</button>
+                                    <button className="btn btn-primary ms-1 width-100" onClick={() => navigate(`/product/${p.slug}`)}>More Details</button>
                                     <button className="btn btn-secondary ms-1">ADD TO CART</button>
                                 </div>
                             </div>
