@@ -328,16 +328,17 @@ export const relatedProductController = async (req, res) => {
 export const productCategoryController = async (req, res) => {
     try {
         const category = await categoryModel.findOne({ slug: req.params.slug });
-        const products = await productModel.find({ category: category._id }).populate("category").populate("subcategory").select("-photo");
         if (!category) {
             return res.status(404).send({
                 success: false,
                 message: "Category not found"
             });
         }
+        const products = await productModel.find({ category: category._id }).populate("category").populate("subcategory").select("-photo");
         res.status(200).send({
             success: true,
             message: "Products based on category",
+            category,
             products
         });
     } catch (error) {
