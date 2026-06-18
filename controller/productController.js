@@ -1,6 +1,7 @@
 import productModel from "../models/productModel.js";
 import fs from 'fs';
 import slugify from "slugify";
+import categoryModel from "../models/categoryModel.js";
 
 
 export const createProductController = async (req, res) => {
@@ -318,6 +319,32 @@ export const relatedProductController = async (req, res) => {
         res.status(400).send({
             success: false,
             message: "Error in getting related products",
+            error
+        })
+    }
+}
+
+//get products based on category
+export const productCategoryController = async (req, res) => {
+    try {
+        const category = await categoryModel.findOne({ slug: req.params.slug });
+        const products = await productModel.find({ category: category._id }).populate("category").populate("subcategory").select("-photo");
+        if (!category) {
+            return res.status(404).send({
+                success: false,
+                message: "Category not found"
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: "Products based on category",
+            products
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in getting products based on category",
             error
         })
     }
