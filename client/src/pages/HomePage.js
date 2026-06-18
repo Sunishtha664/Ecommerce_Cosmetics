@@ -174,7 +174,7 @@ const HomePage = () => {
                                         onClick={() => setCart([...cart, p])}>
                                         ADD TO CART
                                     </button>
-                                </div>hahah
+                                </div>
                             </div>
 
                         ))}
