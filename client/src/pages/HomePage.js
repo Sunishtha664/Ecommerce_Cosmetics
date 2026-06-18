@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Checkbox, Radio } from 'antd';
 import { Prices } from '../components/Routes/Prices';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/cart';
 
 const HomePage = () => {
     const API = process.env.REACT_APP_API || ''
@@ -17,6 +18,7 @@ const HomePage = () => {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [cart, setCart] = useCart();
 
 
     //get all categories
@@ -168,7 +170,10 @@ const HomePage = () => {
                                     <p className="card-text">{p.description?.substring(0, 30)}...</p>
                                     <p className="card-text">Price: रु{p.price}</p>
                                     <button className="btn btn-primary ms-1 width-100" onClick={() => navigate(`/product/${p.slug}`)}>More Details</button>
-                                    <button className="btn btn-secondary ms-1">ADD TO CART</button>
+                                    <button className="btn btn-secondary ms-1"
+                                        onClick={() => setCart([...cart, p])}>
+                                        ADD TO CART
+                                    </button>
                                 </div>
                             </div>
 

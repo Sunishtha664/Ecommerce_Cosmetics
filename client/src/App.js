@@ -28,6 +28,7 @@ import Search from './pages/Search';
 import ProductDetails from './pages/ProductDetails';
 import Categories from './pages/Categories';
 import CategoryProduct from './pages/CategoryProduct';
+import CartPage from './pages/CartPage';
 function App() {
   return (
     <AuthProvider>
