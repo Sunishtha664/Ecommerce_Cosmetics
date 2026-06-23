@@ -57,40 +57,40 @@ const Header = () => {
                                     Home
                                 </NavLink>
                             </li>
-                            <li className="nav-item dropdown">
-                                <Link className="nav-link dropdown-toggle" to={"/categories"} data-bs-toggle="dropdown" >
+                            <li className="nav-item dropdown mega-menu" onMouseEnter={() => categories?.length && categories.forEach(c => loadSubcategories(c._id))}>
+                                <span className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Categories
-                                </Link>
+                                </span>
 
-                                <ul className="dropdown-menu">
-                                    <li>
-                                        <Link className="dropdown-item" to={`/categories`} key="all">
-                                            All Categories
-                                        </Link>
-                                    </li>
-                                    {categories?.map(c => (
-                                        <li className="dropdown-submenu" key={c._id} onMouseEnter={() => loadSubcategories(c._id)}>
-                                            <Link className="dropdown-item dropdown-toggle" to={`/category/${c.slug}`}>
-                                                {c.name}
-                                            </Link>
-                                            <ul className="dropdown-menu">
-                                                {subcategoriesMap[c._id]?.length ? (
-                                                    subcategoriesMap[c._id].map((sub) => (
-                                                        <li key={sub._id}>
-                                                            <Link className="dropdown-item" to={`/subcategory/${sub.slug}`}>
-                                                                {sub.name}
-                                                            </Link>
+                                <div className="dropdown-menu mega-menu-content p-4">
+                                    <div className="mega-menu-top mb-3">
+                                        <Link className="mega-menu-all" to="/categories">All Categories</Link>
+                                    </div>
+                                    <div className="mega-menu-grid">
+                                        {categories?.map(c => (
+                                            <div className="mega-menu-column" key={c._id} onMouseEnter={() => loadSubcategories(c._id)}>
+                                                <Link className="mega-menu-column-title" to={`/category/${c.slug}`}>
+                                                    {c.name}
+                                                </Link>
+                                                <ul className="mega-menu-list">
+                                                    {subcategoriesMap[c._id]?.length ? (
+                                                        subcategoriesMap[c._id].map((sub) => (
+                                                            <li key={sub._id}>
+                                                                <Link className="dropdown-item" to={`/subcategory/${sub.slug}`}>
+                                                                    {sub.name}
+                                                                </Link>
+                                                            </li>
+                                                        ))
+                                                    ) : (
+                                                        <li>
+                                                            <span className="dropdown-item text-muted">No subcategories</span>
                                                         </li>
-                                                    ))
-                                                ) : (
-                                                    <li>
-                                                        <span className="dropdown-item text-muted">No subcategories</span>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </li>
-                                    ))}
-                                </ul>
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
 
                             </li>
 
