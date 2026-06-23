@@ -7,6 +7,7 @@ import SubcategoryForm from '../../components/Form/SubcategoryForm'
 import { Modal } from 'antd'
 
 const CreateSubCategory = () => {
+    const API = process.env.REACT_APP_API || ''
     const [name, setName] = useState('')
     const [parentCategory, setParentCategory] = useState('')
     const [categories, setCategories] = useState([])
@@ -16,9 +17,15 @@ const CreateSubCategory = () => {
     const [updatedName, setUpdatedName] = useState('')
     const [updatedParentCategory, setUpdatedParentCategory] = useState('')
 
+    const getAuthConfig = () => {
+        const authData = localStorage.getItem('auth')
+        const token = authData ? JSON.parse(authData)?.token : ''
+        return token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    }
+
     const getAllCategories = async () => {
         try {
-            const { data } = await axios.get('/api/v1/category/get-category')
+            const { data } = await axios.get(`${API}/api/v1/category/get-category`)
             if (data.success) {
                 setCategories(data.category)
             }
@@ -48,10 +55,10 @@ const CreateSubCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const { data } = await axios.post('/api/v1/subcategory/create-subcategory', {
+            const { data } = await axios.post(`${API}/api/v1/subcategory/create-subcategory`, {
                 name,
                 parentCategory
-            })
+            }, getAuthConfig())
             if (data?.success) {
                 toast.success(`${data.subcategory.name} created successfully`)
                 setName('')
@@ -77,10 +84,10 @@ const CreateSubCategory = () => {
         e.preventDefault()
         if (!selected) return
         try {
-            const { data } = await axios.put(`/api/v1/subcategory/update-subcategory/${selected._id}`, {
+            const { data } = await axios.put(`${API}/api/v1/subcategory/update-subcategory/${selected._id}`, {
                 name: updatedName,
                 parentCategory: updatedParentCategory
-            })
+            }, getAuthConfig())
             if (data.success) {
                 toast.success(`${updatedName} updated successfully`)
                 setSelected(null)
@@ -99,7 +106,7 @@ const CreateSubCategory = () => {
 
     const handleDelete = async (id, name) => {
         try {
-            const { data } = await axios.delete(`/api/v1/subcategory/delete-subcategory/${id}`)
+            const { data } = await axios.delete(`${API}/api/v1/subcategory/delete-subcategory/${id}`, getAuthConfig())
             if (data.success) {
                 toast.success(`${name} deleted successfully`)
                 getAllSubcategories()

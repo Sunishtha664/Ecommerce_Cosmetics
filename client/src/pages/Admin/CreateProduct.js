@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 const CreateProduct = () => {
     const navigate = useNavigate()
+    const API = process.env.REACT_APP_API || ''
     const getAuthConfig = () => {
         const authData = localStorage.getItem('auth')
         const token = authData ? JSON.parse(authData)?.token : ''
@@ -27,7 +28,7 @@ const CreateProduct = () => {
     //get all categories
     const getAllCategories = async () => {
         try {
-            const { data } = await axios.get('/api/v1/category/get-category')
+            const { data } = await axios.get(`${API}/api/v1/category/get-category`)
             if (data?.success) {
                 setCategories(data?.category)
             }
@@ -44,7 +45,7 @@ const CreateProduct = () => {
     //get subcategories by category
     const getSubcategoriesByCategory = async (categoryId) => {
         try {
-            const { data } = await axios.get(`/api/v1/subcategory/get-subcategories/${categoryId}`)
+            const { data } = await axios.get(`${API}/api/v1/subcategory/get-subcategories/${categoryId}`)
             if (data?.success) {
                 setSubcategories(data?.subcategories)
             }
@@ -89,7 +90,7 @@ const CreateProduct = () => {
             if (subcategory) productData.append('subcategory', subcategory)
             productData.append('photo', photo)
 
-            const { data } = await axios.post('/api/v1/product/create-product', productData, getAuthConfig())
+            const { data } = await axios.post(`${API}/api/v1/product/create-product`, productData, getAuthConfig())
             console.log('Create product response', data)
             if (data?.success) {
                 toast.success('Product created successfully')

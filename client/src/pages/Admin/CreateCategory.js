@@ -7,6 +7,7 @@ import CategoryForm from '../../components/Form/CategoryForm'
 import { Modal } from 'antd'
 
 const CreateCategory = () => {
+    const API = process.env.REACT_APP_API || ''
     const [name, setName] = useState('')
     const [categories, setCategories] = useState([])
     const [visible, setVisible] = useState(false)
@@ -22,7 +23,7 @@ const CreateCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const { data } = await axios.post('/api/v1/category/create-category', { name }, getAuthConfig())
+            const { data } = await axios.post(`${API}/api/v1/category/create-category`, { name }, getAuthConfig())
             if (data?.success) {
                 toast.success(`${data.category.name} created successfully`)
                 setName('')
@@ -40,7 +41,7 @@ const CreateCategory = () => {
 
     const getAllCategories = async () => {
         try {
-            const { data } = await axios.get('/api/v1/category/get-category')
+            const { data } = await axios.get(`${API}/api/v1/category/get-category`)
             if (data?.success) {
                 setCategories(data?.category)
             }
@@ -64,7 +65,7 @@ const CreateCategory = () => {
     const handleUpdate = async (e) => {
         e.preventDefault()
         try {
-            const { data } = await axios.put(`/api/v1/category/update-category/${selected?._id}`, { name: updatedName }, getAuthConfig())
+            const { data } = await axios.put(`${API}/api/v1/category/update-category/${selected?._id}`, { name: updatedName }, getAuthConfig())
             if (data.success) {
                 toast.success(`${updatedName} updated successfully`)
                 setSelected(null)
@@ -85,7 +86,7 @@ const CreateCategory = () => {
     //delete category
     const handleDelete = async (id, name) => {
         try {
-            const { data } = await axios.delete(`/api/v1/category/delete-category/${id}`, getAuthConfig())
+            const { data } = await axios.delete(`${API}/api/v1/category/delete-category/${id}`, getAuthConfig())
             if (data.success) {
                 toast.success(`${name} deleted successfully`)
                 getAllCategories()
@@ -135,8 +136,7 @@ const CreateCategory = () => {
                                                             <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(category)}>
                                                                 Edit
                                                             </button>
-                                                            <button className="btn btn
-                                                            -sm btn-outline-danger" onClick={() => handleDelete(category._id, category.name)}>
+                                                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(category._id, category.name)}>
                                                                 Delete
                                                             </button>
                                                         </td>

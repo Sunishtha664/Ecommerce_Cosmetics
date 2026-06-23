@@ -32,7 +32,7 @@ const Products = () => {
 
     const getAllProducts = async () => {
         try {
-            const { data } = await axios.get('/api/v1/product/get-products')
+            const { data } = await axios.get(`${API}/api/v1/product/get-products`)
             if (data?.success) {
                 setProducts(data.products)
             }
@@ -45,7 +45,7 @@ const Products = () => {
 
     const getAllCategories = async () => {
         try {
-            const { data } = await axios.get('/api/v1/category/get-category')
+            const { data } = await axios.get(`${API}/api/v1/category/get-category`)
             if (data?.success) {
                 setCategories(data?.category)
             }
@@ -140,7 +140,7 @@ const Products = () => {
                 formData.append('photo', photo)
             }
 
-            const { data } = await axios.put(`/api/v1/product/update-product/${selectedProduct._id}`, formData, getAuthConfig())
+            const { data } = await axios.put(`${API}/api/v1/product/update-product/${selectedProduct._id}`, formData, getAuthConfig())
             if (data?.success) {
                 toast.success('Product updated successfully!')
                 setVisible(false)
@@ -161,7 +161,7 @@ const Products = () => {
         if (!confirmed) return
 
         try {
-            const { data } = await axios.delete(`/api/v1/product/delete-product/${id}`, getAuthConfig())
+            const { data } = await axios.delete(`${API}/api/v1/product/delete-product/${id}`, getAuthConfig())
             if (data?.success) {
                 toast.success(`${name} deleted successfully`)
                 getAllProducts()
