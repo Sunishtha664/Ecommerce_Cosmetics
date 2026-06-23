@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import { GiShoppingBag } from "react-icons/gi";
 import { useAuth } from '../../context/auth';
 import SearchInput from '../Form/SearchInput';
 import useCategory from '../../hooks/useCategory';
-import { Dropdown } from 'antd';
-
 
 const Header = () => {
     const [auth, setAuth] = useAuth();
     const { categories } = useCategory();
     const [showDropdown, setShowDropdown] = useState(false);
+    const [subcategoriesMap, setSubcategoriesMap] = useState({});
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -21,6 +21,21 @@ const Header = () => {
         localStorage.removeItem('auth');
         navigate('/login');
 
+    };
+
+    const loadSubcategories = async (categoryId) => {
+        if (!categoryId || subcategoriesMap[categoryId]) return;
+        try {
+            const { data } = await axios.get(`/api/v1/subcategory/get-subcategories/${categoryId}`);
+            if (data?.success) {
+                setSubcategoriesMap(prev => ({
+                    ...prev,
+                    [categoryId]: data.subcategories || []
+                }));
+            }
+        } catch (error) {
+            console.error('Unable to load subcategories', error);
+        }
     };
 
     return (
@@ -54,10 +69,25 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     {categories?.map(c => (
-                                        <li>
-                                            <Link className="dropdown-item" to={`/category/${c.slug}`} key={c._id}>
+                                        <li className="dropdown-submenu" key={c._id} onMouseEnter={() => loadSubcategories(c._id)}>
+                                            <Link className="dropdown-item dropdown-toggle" to={`/category/${c.slug}`}>
                                                 {c.name}
                                             </Link>
+                                            <ul className="dropdown-menu">
+                                                {subcategoriesMap[c._id]?.length ? (
+                                                    subcategoriesMap[c._id].map((sub) => (
+                                                        <li key={sub._id}>
+                                                            <Link className="dropdown-item" to={`/subcategory/${sub.slug}`}>
+                                                                {sub.name}
+                                                            </Link>
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <li>
+                                                        <span className="dropdown-item text-muted">No subcategories</span>
+                                                    </li>
+                                                )}
+                                            </ul>
                                         </li>
                                     ))}
                                 </ul>

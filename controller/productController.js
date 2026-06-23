@@ -1,7 +1,8 @@
-import productModel from "../models/productModel.js";
+import productModel from "..//models/productModel.js";
 import fs from 'fs';
 import slugify from "slugify";
 import categoryModel from "../models/categoryModel.js";
+import subcategoryModel from "../models/subcategoryModel.js";
 
 
 export const createProductController = async (req, res) => {
@@ -346,6 +347,33 @@ export const productCategoryController = async (req, res) => {
         res.status(400).send({
             success: false,
             message: "Error in getting products based on category",
+            error
+        })
+    }
+}
+
+//get products based on subcategory
+export const productSubcategoryController = async (req, res) => {
+    try {
+        const subcategory = await subcategoryModel.findOne({ slug: req.params.slug }).populate("parentCategory");
+        if (!subcategory) {
+            return res.status(404).send({
+                success: false,
+                message: "Subcategory not found"
+            });
+        }
+        const products = await productModel.find({ subcategory: subcategory._id }).populate("category").populate("subcategory").select("-photo");
+        res.status(200).send({
+            success: true,
+            message: "Products based on subcategory",
+            subcategory,
+            products
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in getting products based on subcategory",
             error
         })
     }

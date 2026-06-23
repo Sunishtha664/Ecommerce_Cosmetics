@@ -235,6 +235,27 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -0.5rem;
+  border-radius: 0.25rem;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+
+.dropdown-submenu>a:after {
+  content: "\00bb";
+  float: right;
+  margin-left: .5rem;
+}
+
 .register-wrapper {
   width: 100%;
   max-width: 500px;
