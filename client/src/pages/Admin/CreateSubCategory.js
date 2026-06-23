@@ -37,7 +37,7 @@ const CreateSubCategory = () => {
 
     const getAllSubcategories = async () => {
         try {
-            const { data } = await axios.get('/api/v1/subcategory/get-subcategory')
+            const { data } = await axios.get(`${API}/api/v1/subcategory/get-subcategory`)
             if (data.success) {
                 setSubcategories(data.subcategory)
             }

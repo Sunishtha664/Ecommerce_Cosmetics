@@ -57,7 +57,7 @@ const Products = () => {
 
     const getSubcategoriesByCategory = async (categoryId) => {
         try {
-            const { data } = await axios.get(`/api/v1/subcategory/get-subcategories/${categoryId}`)
+            const { data } = await axios.get(`${API}/api/v1/subcategory/get-subcategories/${categoryId}`)
             if (data?.success) {
                 setSubcategories(data?.subcategories)
             }
