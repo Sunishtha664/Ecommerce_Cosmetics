@@ -22,7 +22,15 @@ const CartPage = () => {
 
                 <div className='row'>
                     <div className='col-md-9'>
-                        Cart Item
+                        {
+                            cart?.map(p => (
+                                <div className='row'>
+                                    <div className='col-md-4'>image</div>
+                                    <div className='col-md-8'>details</div>
+                                </div>
+
+                            ))
+                        }
                     </div>
                     <div className='col-md-3'>
                         Checkout || Payment
