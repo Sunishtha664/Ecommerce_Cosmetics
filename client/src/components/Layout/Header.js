@@ -5,9 +5,11 @@ import { GiShoppingBag } from "react-icons/gi";
 import { useAuth } from '../../context/auth';
 import SearchInput from '../Form/SearchInput';
 import useCategory from '../../hooks/useCategory';
+import { useCart } from '../../context/cart';
 
 const Header = () => {
     const [auth, setAuth] = useAuth();
+    const [cart] = useCart();
     const { categories } = useCategory();
     const [showDropdown, setShowDropdown] = useState(false);
     const [subcategoriesMap, setSubcategoriesMap] = useState({});
@@ -160,7 +162,7 @@ const Header = () => {
 
                                     <li className="nav-item">
                                         <NavLink className="nav-link" to="/cart" >
-                                            Cart (0)
+                                            Cart {cart?.length > 0 && <span className="badge bg-secondary">{cart.length}</span>}
                                         </NavLink>
                                     </li>
                                 </ul>

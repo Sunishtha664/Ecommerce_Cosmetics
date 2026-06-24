@@ -6,6 +6,7 @@ import { Checkbox, Radio } from 'antd';
 import { Prices } from '../components/Routes/Prices';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/cart';
+import { toast } from 'react-toastify';
 
 const HomePage = () => {
     const API = process.env.REACT_APP_API || ''
@@ -153,7 +154,6 @@ const HomePage = () => {
                 </div>
                 <div className="col-md-9">
 
-                    <h1 className="text-center">All Products</h1>
                     <div className="d-flex flex-wrap">
 
                         {products?.map((p) => (
@@ -171,7 +171,10 @@ const HomePage = () => {
                                     <p className="card-text">Price: रु{p.price}</p>
                                     <button className="btn btn-primary ms-1 width-100" onClick={() => navigate(`/product/${p.slug}`)}>More Details</button>
                                     <button className="btn btn-secondary ms-1"
-                                        onClick={() => setCart([...cart, p])}>
+                                        onClick={() => {
+                                            setCart([...cart, p])
+                                            toast.success("Item added to cart")
+                                        }}>
                                         ADD TO CART
                                     </button>
                                 </div>
