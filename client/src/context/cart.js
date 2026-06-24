@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from 'react';
+import { useState, useContext, createContext, useEffect } from 'react';
 import axios from 'axios';
 
 const CartContext = createContext();
@@ -6,6 +6,13 @@ const CartContext = createContext();
 
 const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
+
+    useEffect(() => {
+        let existingCartItem = localStorage.getItem('cart')
+
+        if (existingCartItem) setCart(JSON.parse(existingCartItem))
+
+    }, [])
 
     return (
         <CartContext.Provider value={[cart, setCart]}>
