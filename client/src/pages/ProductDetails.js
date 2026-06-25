@@ -70,6 +70,7 @@ const ProductDetails = () => {
                     <h4>Price : रु{product.price}</h4>
                     <h4>Category : {product?.category?.name}</h4>
                     <h4>Subcategory : {product?.subcategory?.name}</h4>
+                    <h4>Section : {product?.section?.name || 'None'}</h4>
 
                     <button className="btn btn-secondary ms-1">ADD TO CART</button>
                 </div>

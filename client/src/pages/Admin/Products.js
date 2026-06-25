@@ -17,12 +17,14 @@ const Products = () => {
     const navigate = useNavigate()
     const [categories, setCategories] = useState([])
     const [subcategories, setSubcategories] = useState([])
+    const [sections, setSections] = useState([])
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [brand, setBrand] = useState('')
     const [price, setPrice] = useState('')
     const [category, setCategory] = useState('')
     const [subcategory, setSubcategory] = useState('')
+    const [section, setSection] = useState('')
     const [quantity, setQuantity] = useState('')
     const [shipping, setShipping] = useState('')
     const [photo, setPhoto] = useState(null)
@@ -67,13 +69,37 @@ const Products = () => {
         }
     }
 
+    const getSectionsBySubcategory = async (subcategoryId) => {
+        try {
+            const { data } = await axios.get(`${API}/api/v1/section/get-sections/${subcategoryId}`)
+            if (data?.success) {
+                setSections(data?.sections)
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error('Error fetching sections')
+        }
+    }
+
     const handleCategoryChange = (value) => {
         setCategory(value)
         setSubcategory('')
+        setSection('')
+        setSections([])
         if (value) {
             getSubcategoriesByCategory(value)
         } else {
             setSubcategories([])
+        }
+    }
+
+    const handleSubcategoryChange = (value) => {
+        setSubcategory(value)
+        setSection('')
+        if (value) {
+            getSectionsBySubcategory(value)
+        } else {
+            setSections([])
         }
     }
 
@@ -84,6 +110,7 @@ const Products = () => {
         setPrice('')
         setCategory('')
         setSubcategory('')
+        setSection('')
         setQuantity('')
         setShipping('')
         setPhoto(null)
@@ -99,6 +126,7 @@ const Products = () => {
         setPrice(product.price || '')
         setCategory(product.category?._id || '')
         setSubcategory(product.subcategory?._id || '')
+        setSection(product.section?._id || '')
         setQuantity(product.quantity || '')
         setShipping(product.shipping ? '1' : '0')
         setPhoto(null)
@@ -106,6 +134,9 @@ const Products = () => {
 
         if (product.category?._id) {
             getSubcategoriesByCategory(product.category._id)
+        }
+        if (product.subcategory?._id) {
+            getSectionsBySubcategory(product.subcategory._id)
         }
         setVisible(true)
     }
@@ -124,6 +155,11 @@ const Products = () => {
             return
         }
 
+        if (sections.length > 0 && !section) {
+            toast.error('Please select a section for the chosen subcategory')
+            return
+        }
+
         try {
             const formData = new FormData()
             formData.append('name', name.trim())
@@ -135,6 +171,9 @@ const Products = () => {
             formData.append('category', category)
             if (subcategory) {
                 formData.append('subcategory', subcategory)
+            }
+            if (section) {
+                formData.append('section', section)
             }
             if (photo) {
                 formData.append('photo', photo)
@@ -208,6 +247,7 @@ const Products = () => {
                                                 <th scope="col">Product</th>
                                                 <th scope="col">Category</th>
                                                 <th scope="col">Subcategory</th>
+                                                <th scope="col">Section</th>
                                                 <th scope="col">Price</th>
                                                 <th scope="col">Qty</th>
                                                 <th scope="col">Actions</th>
@@ -235,6 +275,7 @@ const Products = () => {
                                                         </td>
                                                         <td>{product.category?.name || '—'}</td>
                                                         <td>{product.subcategory?.name || '—'}</td>
+                                                        <td>{product.section?.name || '—'}</td>
                                                         <td>रु{product.price}</td>
                                                         <td>{product.quantity}</td>
                                                         <td>
@@ -249,7 +290,7 @@ const Products = () => {
                                                 ))
                                             ) : (
                                                 <tr>
-                                                    <td colSpan="6" className="text-center py-4 text-muted">
+                                                    <td colSpan="7" className="text-center py-4 text-muted">
                                                         No products found yet.
                                                     </td>
                                                 </tr>
@@ -284,12 +325,26 @@ const Products = () => {
                             <select
                                 className="form-select"
                                 value={subcategory}
-                                onChange={(e) => setSubcategory(e.target.value)}
+                                onChange={(e) => handleSubcategoryChange(e.target.value)}
                                 disabled={!category || subcategories.length === 0}
                             >
                                 <option value="">Select subcategory</option>
                                 {subcategories?.map((s) => (
                                     <option key={s._id} value={s._id}>{s.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Section</label>
+                            <select
+                                className="form-select"
+                                value={section}
+                                onChange={(e) => setSection(e.target.value)}
+                                disabled={!subcategory || sections.length === 0}
+                            >
+                                <option value="">Select section</option>
+                                {sections?.map((sectionItem) => (
+                                    <option key={sectionItem._id} value={sectionItem._id}>{sectionItem.name}</option>
                                 ))}
                             </select>
                         </div>

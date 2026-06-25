@@ -32,6 +32,18 @@ const AdminMenu = () => {
                         <i className="fa fa-plus me-2"></i>Create Subcategory
                     </NavLink>
                     <NavLink
+                        to="/dashboard/admin/create-section"
+                        className="list-group-item list-group-item-action"
+                        style={{
+                            borderLeft: '3px solid transparent',
+                            transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.borderLeftColor = '#0d6efd'}
+                        onMouseLeave={(e) => e.currentTarget.style.borderLeftColor = 'transparent'}
+                    >
+                        <i className="fa fa-plus me-2"></i>Create Section
+                    </NavLink>
+                    <NavLink
                         to="/dashboard/admin/products"
                         className="list-group-item list-group-item-action"
                         style={{

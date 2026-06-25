@@ -3,11 +3,12 @@ import fs from 'fs';
 import slugify from "slugify";
 import categoryModel from "../models/categoryModel.js";
 import subcategoryModel from "../models/subcategoryModel.js";
+import sectionModel from "../models/sectionModel.js";
 
 
 export const createProductController = async (req, res) => {
     try {
-        const { name, slug, description, brand, price, category, subcategory, quantity, shipping } = req.fields;
+        const { name, slug, description, brand, price, category, subcategory, section, quantity, shipping } = req.fields;
         const { photo } = req.files;
 
         //validation
@@ -40,6 +41,7 @@ export const createProductController = async (req, res) => {
             price: Number(price),
             category,
             subcategory,
+            section,
             quantity: Number(quantity),
             shipping: shipping === '1' || shipping === 1 || shipping === true,
         });
@@ -68,7 +70,7 @@ export const createProductController = async (req, res) => {
 //get all products
 export const getProductController = async (req, res) => {
     try {
-        const products = await productModel.find({}).populate("category").populate("subcategory").select("-photo").limit(12).sort({ createdAt: -1 });
+        const products = await productModel.find({}).populate("category").populate("subcategory").populate("section").select("-photo").limit(12).sort({ createdAt: -1 });
         res.status(200).send({
             success: true,
             totalCount: products.length,
@@ -88,7 +90,7 @@ export const getProductController = async (req, res) => {
 //get single product
 export const getSingleProductController = async (req, res) => {
     try {
-        const product = await productModel.findOne({ slug: req.params.slug }).select("-photo").populate("category").populate("subcategory");
+        const product = await productModel.findOne({ slug: req.params.slug }).select("-photo").populate("category").populate("subcategory").populate("section");
         res.status(200).send({
             success: true,
             message: "Single product",
@@ -144,7 +146,7 @@ export const deleteProductController = async (req, res) => {
 //update product
 export const updateProductController = async (req, res) => {
     try {
-        const { name, slug, description, brand, price, category, subcategory, quantity, shipping } = req.fields;
+        const { name, slug, description, brand, price, category, subcategory, section, quantity, shipping } = req.fields;
         const { photo } = req.files;
 
         //validation
@@ -175,6 +177,7 @@ export const updateProductController = async (req, res) => {
             price: Number(price),
             category,
             subcategory,
+            section,
             quantity: Number(quantity),
             shipping: shipping === '1' || shipping === 1 || shipping === true,
         }, { new: true })
@@ -335,7 +338,7 @@ export const productCategoryController = async (req, res) => {
                 message: "Category not found"
             });
         }
-        const products = await productModel.find({ category: category._id }).populate("category").populate("subcategory").select("-photo");
+        const products = await productModel.find({ category: category._id }).populate("category").populate("subcategory").populate("section").select("-photo");
         res.status(200).send({
             success: true,
             message: "Products based on category",
@@ -362,7 +365,7 @@ export const productSubcategoryController = async (req, res) => {
                 message: "Subcategory not found"
             });
         }
-        const products = await productModel.find({ subcategory: subcategory._id }).populate("category").populate("subcategory").select("-photo");
+        const products = await productModel.find({ subcategory: subcategory._id }).populate("category").populate("subcategory").populate("section").select("-photo");
         res.status(200).send({
             success: true,
             message: "Products based on subcategory",

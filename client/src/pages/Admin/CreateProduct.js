@@ -21,6 +21,8 @@ const CreateProduct = () => {
     const [price, setPrice] = useState('')
     const [category, setCategory] = useState('')
     const [subcategory, setSubcategory] = useState('')
+    const [section, setSection] = useState('')
+    const [sections, setSections] = useState([])
     const [quantity, setQuantity] = useState('')
     const [shipping, setShipping] = useState('')
     const [photo, setPhoto] = useState('')
@@ -55,14 +57,39 @@ const CreateProduct = () => {
         }
     }
 
+    const getSectionsBySubcategory = async (subcategoryId) => {
+        try {
+            const { data } = await axios.get(`${API}/api/v1/section/get-sections/${subcategoryId}`)
+            if (data?.success) {
+                setSections(data?.sections)
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error('Error fetching sections')
+        }
+    }
+
     //handle category change
     const handleCategoryChange = (value) => {
         setCategory(value)
         setSubcategory('') // clear subcategory when category changes
+        setSection('')
         if (value) {
             getSubcategoriesByCategory(value)
         } else {
             setSubcategories([])
+            setSections([])
+        }
+    }
+
+    //handle subcategory change
+    const handleSubcategoryChange = (value) => {
+        setSubcategory(value)
+        setSection('')
+        if (value) {
+            getSectionsBySubcategory(value)
+        } else {
+            setSections([])
         }
     }
 
@@ -78,6 +105,10 @@ const CreateProduct = () => {
             return toast.error('Please select a subcategory for the chosen category')
         }
 
+        if (sections.length > 0 && !section) {
+            return toast.error('Please select a section for the chosen subcategory')
+        }
+
         try {
             const productData = new FormData()
             productData.append('name', name)
@@ -88,6 +119,7 @@ const CreateProduct = () => {
             productData.append('shipping', shipping === '1')
             productData.append('category', category)
             if (subcategory) productData.append('subcategory', subcategory)
+            if (section) productData.append('section', section)
             productData.append('photo', photo)
 
             const { data } = await axios.post(`${API}/api/v1/product/create-product`, productData, getAuthConfig())
@@ -135,7 +167,7 @@ const CreateProduct = () => {
                                         <select
                                             className="form-select"
                                             value={subcategory}
-                                            onChange={(e) => setSubcategory(e.target.value)}
+                                            onChange={(e) => handleSubcategoryChange(e.target.value)}
                                             disabled={!category || subcategories.length === 0}
                                         >
                                             <option value="">Select subcategory</option>
@@ -145,6 +177,23 @@ const CreateProduct = () => {
                                         </select>
                                         <small className="form-text text-muted">
                                             {!category ? 'Select a category first to see subcategories.' : subcategories.length ? 'Choose the matching subcategory.' : 'No subcategories exist for this category.'}
+                                        </small>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label fw-bold">Section</label>
+                                        <select
+                                            className="form-select"
+                                            value={section}
+                                            onChange={(e) => setSection(e.target.value)}
+                                            disabled={!subcategory || sections.length === 0}
+                                        >
+                                            <option value="">Select section</option>
+                                            {sections?.map((sectionItem) => (
+                                                <option key={sectionItem._id} value={sectionItem._id}>{sectionItem.name}</option>
+                                            ))}
+                                        </select>
+                                        <small className="form-text text-muted">
+                                            {!subcategory ? 'Select a subcategory first to see sections.' : sections.length ? 'Choose a section for this product.' : 'No sections exist for this subcategory.'}
                                         </small>
                                     </div>
 
