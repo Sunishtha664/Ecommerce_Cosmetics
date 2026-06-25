@@ -60,7 +60,7 @@ const SubcategoryProduct = () => {
                             </div>
                             <span className="products-count-badge">{group.products.length} Products</span>
                         </div>
-                        
+
                         <div className="position-relative scroll-container-outer">
                             <div className="product-scroll-container">
                                 {group.products.map((p) => (
@@ -69,9 +69,9 @@ const SubcategoryProduct = () => {
                                             <img
                                                 src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
                                                 alt={p.name}
-                                                onError={(e) => { 
-                                                    e.target.onerror = null; 
-                                                    e.target.src = 'https://via.placeholder.com/286x180?text=No+Image' 
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://via.placeholder.com/286x180?text=No+Image'
                                                 }}
                                             />
                                             {subcategory?.name && (
@@ -86,22 +86,22 @@ const SubcategoryProduct = () => {
                                                 <h5 className="scroll-card-title">{p.name}</h5>
                                                 <p className="scroll-card-description">{p.description?.substring(0, 50)}...</p>
                                             </div>
-                                            
+
                                             <div className="scroll-card-footer">
                                                 <div className="price-container">
                                                     <span className="price-label">Price</span>
                                                     <span className="price-value">रु{p.price}</span>
                                                 </div>
-                                                
+
                                                 <div className="card-actions-btn-group">
-                                                    <button 
-                                                        className="btn-details-icon" 
+                                                    <button
+                                                        className="btn-details-icon"
                                                         onClick={() => navigate(`/product/${p.slug}`)}
                                                         title="View Details"
                                                     >
                                                         <FaEye size={13} />
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         className="btn-add-cart-icon"
                                                         onClick={() => {
                                                             setCart([...cart, p]);
@@ -132,5 +132,6 @@ const SubcategoryProduct = () => {
         </Layout>
     )
 }
+bla bloa nla bla
 
 export default SubcategoryProduct
