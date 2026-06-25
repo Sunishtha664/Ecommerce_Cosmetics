@@ -132,6 +132,6 @@ const SubcategoryProduct = () => {
         </Layout>
     )
 }
-bla bloa nla bla
+bla bloa
 
 export default SubcategoryProduct
