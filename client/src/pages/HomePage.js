@@ -7,6 +7,7 @@ import { Prices } from '../components/Routes/Prices';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/cart';
 import { toast } from 'react-toastify';
+import { FaEye, FaShoppingCart } from 'react-icons/fa';
 
 const HomePage = () => {
     const API = process.env.REACT_APP_API || ''
@@ -111,6 +112,7 @@ const HomePage = () => {
             getAllProducts();
         }
     }, [checked, radio]);
+
     //get filtered product
     const filteredProduct = async () => {
         try {
@@ -128,80 +130,115 @@ const HomePage = () => {
         <Layout title="Luminelle - Your Beauty Destination">
             <div className="row mt-3">
                 <div className="col-md-3">
-                    <h4 className="text-center">Filter By Category</h4>
-                    <div className="d-flex flex-column">
-                        {categories?.map((c) => (
-                            <div key={c._id}>
-                                <Checkbox onChange={(e) => handleFilter(e.target.checked, c._id)}>{c.name}</Checkbox>
+                    <div className="filters-panel">
+                        <div>
+                            <h4 className="filter-section-title">Filter By Category</h4>
+                            <div className="filter-options-group">
+                                {categories?.map((c) => (
+                                    <Checkbox 
+                                        key={c._id} 
+                                        onChange={(e) => handleFilter(e.target.checked, c._id)}
+                                    >
+                                        {c.name}
+                                    </Checkbox>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                    {/* Price Filter */}
-                    <h4 className="text-center mt-4">Filter By Price</h4>
-                    <div className="d-flex flex-column">
-                        <Radio.Group onChange={(e) => setRadio(e.target.value)}>
-                            {Prices?.map((p) => (
-                                <div key={p._id}>
-                                    <Radio value={p.array}>{p.name}</Radio>
-                                </div>
-                            ))}
-                        </Radio.Group>
-                    </div>
+                        </div>
 
-                    <div className="d-flex flex-column">
-                        <button className="btn btn-danger" onClick={() => window.location.reload()}>Reset Filters</button>
+                        <div>
+                            <h4 className="filter-section-title">Filter By Price</h4>
+                            <div className="filter-options-group">
+                                <Radio.Group onChange={(e) => setRadio(e.target.value)}>
+                                    {Prices?.map((p) => (
+                                        <div key={p._id} className="mb-1">
+                                            <Radio value={p.array}>{p.name}</Radio>
+                                        </div>
+                                    ))}
+                                </Radio.Group>
+                            </div>
+                        </div>
+
+                        <button className="btn-reset-filters" onClick={() => window.location.reload()}>
+                            Reset Filters
+                        </button>
                     </div>
                 </div>
+                
                 <div className="col-md-9">
-
-                    <div className="d-flex flex-wrap">
-
+                    <h2 className="section-heading mb-4 px-2" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700 }}>
+                        Discover Products
+                    </h2>
+                    
+                    <div className="d-flex flex-wrap gap-4 px-2">
                         {products?.map((p) => (
-
-                            <div key={p._id} className="card m-2" style={{ width: '18rem' }}>
-                                <img
-                                    src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
-                                    className="card-img-top"
-                                    alt={p.name}
-                                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/286x180?text=No+Image' }}
-                                />
-                                <div className="card-body">
-                                    <h5 className="card-title">{p.name}</h5>
-                                    <p className="card-text">{p.description?.substring(0, 30)}...</p>
-                                    <p className="card-text">Price: रु{p.price}</p>
-                                    <button className="btn btn-primary ms-1 width-100" onClick={() => navigate(`/product/${p.slug}`)}>More Details</button>
-                                    <button className="btn btn-secondary ms-1"
-                                        onClick={() => {
-                                            setCart([...cart, p])
-                                            localStorage.setItem('cart', JSON.stringify([...cart, p]))
-                                            toast.success("Item added to cart")
-                                        }}>
-                                        ADD TO CART
-                                    </button>
+                            <div key={p._id} className="scroll-product-card">
+                                <div className="scroll-card-img-wrapper">
+                                    <img
+                                        src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
+                                        alt={p.name}
+                                        onError={(e) => { 
+                                            e.target.onerror = null; 
+                                            e.target.src = 'https://via.placeholder.com/286x180?text=No+Image' 
+                                        }}
+                                    />
+                                    {p.category?.name && (
+                                        <span className="scroll-card-badge">
+                                            {p.category.name}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="scroll-card-body">
+                                    <div className="scroll-card-info">
+                                        <span className="scroll-card-brand">Luminelle</span>
+                                        <h5 className="scroll-card-title">{p.name}</h5>
+                                        <p className="scroll-card-description">{p.description?.substring(0, 50)}...</p>
+                                    </div>
+                                    
+                                    <div className="scroll-card-footer">
+                                        <div className="price-container">
+                                            <span className="price-label">Price</span>
+                                            <span className="price-value">रु{p.price}</span>
+                                        </div>
+                                        <div className="card-actions-btn-group">
+                                            <button 
+                                                className="btn-details-icon" 
+                                                onClick={() => navigate(`/product/${p.slug}`)}
+                                                title="View Details"
+                                            >
+                                                <FaEye size={13} />
+                                            </button>
+                                            <button 
+                                                className="btn-add-cart-icon"
+                                                onClick={() => {
+                                                    setCart([...cart, p]);
+                                                    localStorage.setItem('cart', JSON.stringify([...cart, p]));
+                                                    toast.success("Item added to cart");
+                                                }}
+                                                title="Add to Cart"
+                                            >
+                                                <FaShoppingCart size={13} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
                         ))}
                     </div>
 
-                    <div className="m-2 p-3">
-
+                    <div className="m-2 p-3 text-center">
                         {products && products.length < total && (
-                            <button className="btn btn-warning" onClick={(e) => {
+                            <button className="btn btn-warning px-4 py-2" onClick={(e) => {
                                 e.preventDefault();
                                 setPage(page + 1);
-
                             }}>
                                 {loading ? "Loading..." : "Load More"}
                             </button>
-
                         )}
                     </div>
                 </div>
             </div>
-        </Layout >
+        </Layout>
     )
 }
-
 
 export default HomePage
