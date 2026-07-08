@@ -153,6 +153,51 @@ export const forgotPasswordController = async (req, res) => {
 
     }
 };
+// UPDATE USER PROFILE
+export const updateProfileController = async (req, res) => {
+    try {
+        const { name, email, phone, address } = req.body;
+        const userId = req.user._id;
+
+        // Validation
+        if (!name || !email || !phone || !address) {
+            return res.status(400).send({
+                success: false,
+                message: "All fields are required",
+            });
+        }
+
+        // Check if email is already taken by another user
+        const existingUser = await userModel.findOne({ email, _id: { $ne: userId } });
+        if (existingUser) {
+            return res.status(400).send({
+                success: false,
+                message: "Email already in use",
+            });
+        }
+
+        // Update user
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userId,
+            { name, email, phone, address },
+            { new: true }
+        );
+
+        res.status(200).send({
+            success: true,
+            message: "Profile updated successfully",
+            user: updatedUser,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error updating profile",
+            error,
+        });
+    }
+};
+
 export const testController = (req, res) => {
     try {
         res.send("Protected Route");

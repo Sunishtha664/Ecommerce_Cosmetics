@@ -43,140 +43,128 @@ const Header = () => {
 
     return (
         <>
-            <nav className="navbar navbar-expand-lg bg-body-tertiary">
+            <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top">
                 <div className="container-fluid">
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <Link className="navbar-brand me-3" to="/">
+                        <GiShoppingBag /> Luminelle
+                    </Link>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon" />
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-                        <div className="d-flex align-items-center w-100">
-                            <div className="nav-left d-flex align-items-center">
-                                <Link className="navbar-brand me-3" to="/">
-                                    <GiShoppingBag /> Luminelle
-                                </Link>
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        {/* LEFT: Home and Categories */}
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center">
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/">
+                                    Home
+                                </NavLink>
+                            </li>
+                            <li className="nav-item dropdown mega-menu">
+                                <span className="nav-link dropdown-toggle" role="button" aria-expanded="false" style={{ cursor: 'pointer' }}>
+                                    Categories
+                                </span>
 
-                                <ul className="navbar-nav me-3 mb-2 mb-lg-0 d-flex align-items-center">
-                                    <li className="nav-item">
-                                        <NavLink className="nav-link " to="/" >
-                                            Home
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item dropdown mega-menu">
-                                        <span className="nav-link dropdown-toggle" role="button" aria-expanded="false" style={{ cursor: 'pointer' }}>
-                                            Categories
-                                        </span>
-
-                                        <div className="dropdown-menu mega-menu-content p-0">
-                                            <div className="mega-menu-inner">
-                                                <div className="mega-menu-top mb-3">
-                                                    <Link className="mega-menu-all" to="/categories">All Categories</Link>
-                                                </div>
-                                                <div className="mega-menu-grid">
-                                                    {categories?.map(c => (
-                                                        <div className="mega-menu-column" key={c._id} onMouseEnter={() => loadSubcategories(c._id)}>
-                                                            <Link className="mega-menu-column-title" to={`/category/${c.slug}`}>
-                                                                {c.name}
-                                                            </Link>
-                                                            <ul className="mega-menu-list">
-                                                                {subcategoriesMap[c._id]?.length ? (
-                                                                    subcategoriesMap[c._id].map((sub) => (
-                                                                        <li key={sub._id}>
-                                                                            <Link className="dropdown-item" to={`/subcategory/${sub.slug}`}>
-                                                                                {sub.name}
-                                                                            </Link>
-                                                                        </li>
-                                                                    ))
-                                                                ) : (
-                                                                    <li>
-                                                                        <span className="dropdown-item text-muted">No subcategories</span>
-                                                                    </li>
-                                                                )}
-                                                            </ul>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
+                                <div className="dropdown-menu mega-menu-content p-0">
+                                    <div className="mega-menu-inner">
+                                        <div className="mega-menu-top mb-3">
+                                            <Link className="mega-menu-all" to="/categories">All Categories</Link>
                                         </div>
-
-                                    </li>
-
-                                    {!auth?.user ? (
-                                        <>
-                                            <li className="nav-item">
-                                                <NavLink className="nav-link" to="/register" >
-                                                    Register
-                                                </NavLink>
-                                            </li>
-
-                                            <li className="nav-item">
-                                                <NavLink className="nav-link" to="/login">
-                                                    Login
-                                                </NavLink>
-                                            </li>
-                                        </>
-                                    ) : (
-                                        <li className="nav-item dropdown">
-                                            <button
-                                                className="nav-link btn btn-link dropdown-toggle"
-                                                onClick={() => setShowDropdown(!showDropdown)}
-                                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                            >
-                                                {auth.user.name}
-                                            </button>
-                                            {showDropdown && (
-                                                <ul className="dropdown-menu show" style={{ display: 'block', position: 'absolute', right: '0', left: 'auto' }}>
-                                                    <li>
-                                                        <Link
-                                                            className="dropdown-item"
-                                                            to="/profile"
-                                                            onClick={() => setShowDropdown(false)}
-                                                        >
-                                                            View Profile
-                                                        </Link>
-                                                    </li>
-
-                                                    <Link
-                                                        className="dropdown-item"
-                                                        to={`/dashboard/${auth.user.role === 1 ? 'admin' : 'user'}`} onClick={() => setShowDropdown(false)}
-                                                    >
-                                                        Dashboard
+                                        <div className="mega-menu-grid">
+                                            {categories?.map(c => (
+                                                <div className="mega-menu-column" key={c._id} onMouseEnter={() => loadSubcategories(c._id)}>
+                                                    <Link className="mega-menu-column-title" to={`/category/${c.slug}`}>
+                                                        {c.name}
                                                     </Link>
-                                                    <li>
-                                                        <hr className="dropdown-divider" />
-                                                    </li>
-                                                    <li>
-                                                        <button
-                                                            className="dropdown-item"
-                                                            onClick={() => {
-                                                                handleLogout();
-                                                                setShowDropdown(false);
-                                                            }}
-                                                            to="/login"
-                                                        >
-                                                            Logout
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            )}
-                                        </li>
-                                    )}
+                                                    <ul className="mega-menu-list">
+                                                        {subcategoriesMap[c._id]?.length ? (
+                                                            subcategoriesMap[c._id].map((sub) => (
+                                                                <li key={sub._id}>
+                                                                    <Link className="dropdown-item" to={`/subcategory/${sub.slug}`}>
+                                                                        {sub.name}
+                                                                    </Link>
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <li>
+                                                                <span className="dropdown-item text-muted">No subcategories</span>
+                                                            </li>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
 
-                                    <li className="nav-item">
-                                        <Badge count={cart?.length || 0} showZero>
-                                            <NavLink className="nav-link" to="/cart" >
-                                                Cart
-                                            </NavLink>
-                                        </Badge>
-
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div className="ms-auto nav-search">
-                                <SearchInput />
-                            </div>
+                        {/* MIDDLE: Search Bar */}
+                        <div className="nav-search mx-auto flex-grow-1" style={{ maxWidth: '400px' }}>
+                            <SearchInput />
                         </div>
 
+                        {/* RIGHT: User and Cart */}
+                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                            {!auth?.user ? (
+                                <>
+                                    <li className="nav-item">
+                                        <NavLink className="nav-link" to="/register">
+                                            Register
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink className="nav-link" to="/login">
+                                            Login
+                                        </NavLink>
+                                    </li>
+                                </>
+                            ) : (
+                                <li className="nav-item dropdown">
+                                    <button
+                                        className="nav-link btn btn-link dropdown-toggle"
+                                        onClick={() => setShowDropdown(!showDropdown)}
+                                        style={{ textDecoration: 'none', color: 'inherit' }}
+                                    >
+                                        {auth.user.name}
+                                    </button>
+                                    {showDropdown && (
+                                        <ul className="dropdown-menu show" style={{ display: 'block', position: 'absolute', right: '0', left: 'auto' }}>
+                                            <li>
+                                                <Link
+                                                    className="dropdown-item"
+                                                    to={`/dashboard/${auth.user.role === 1 ? 'admin' : 'user'}`}
+                                                    onClick={() => setShowDropdown(false)}
+                                                >
+                                                    Dashboard
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <hr className="dropdown-divider" />
+                                            </li>
+                                            <li>
+                                                <button
+                                                    className="dropdown-item"
+                                                    onClick={() => {
+                                                        handleLogout();
+                                                        setShowDropdown(false);
+                                                    }}
+                                                >
+                                                    Logout
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    )}
+                                </li>
+                            )}
+
+                            <li className="nav-item">
+                                <Badge count={cart?.length || 0} showZero>
+                                    <NavLink className="nav-link" to="/cart">
+                                        Cart
+                                    </NavLink>
+                                </Badge>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>
