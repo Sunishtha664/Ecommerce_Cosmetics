@@ -1,106 +1,191 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import { useCart } from '../context/cart';
 import { useAuth } from '../context/auth';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CartPage = () => {
     const API = process.env.REACT_APP_API || ''
+    const khaltiPublicKey = process.env.REACT_APP_KHALTI_PUBLIC_KEY || ''
 
     const [auth, setAuth] = useAuth();
     const [cart, setCart] = useCart();
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const totalPrice = () => {
         try {
-            let total = 0
-            cart?.map(item => { total = total + item.price })
-            return total;
+            return cart?.reduce((total, item) => total + (item.price || 0), 0) || 0;
         } catch (error) {
             console.log(error)
+            return 0;
         }
     }
 
     const removeCartItem = (pid) => {
         try {
-            let myCart = [...cart]
-            let index = myCart.findIndex(item => item._id === pid)
-            myCart.splice(index, 1)
-            setCart(myCart)
-
-            localStorage.setItem('cart', JSON.stringify(myCart))
+            const myCart = [...cart]
+            const index = myCart.findIndex(item => item._id === pid)
+            if (index !== -1) {
+                myCart.splice(index, 1)
+                setCart(myCart)
+                localStorage.setItem('cart', JSON.stringify(myCart))
+                toast.success('Item removed from cart')
+            }
         } catch (error) {
             console.log(error)
         }
     }
+
+    const handleKhaltiCheckout = async () => {
+        if (!auth?.token) {
+            return navigate('/login', { state: '/cart' });
+        }
+
+        if (!auth?.user?.address) {
+            toast.info('Please update your address before checkout')
+            return navigate('/dashboard/user/profile')
+        }
+
+        if (!cart?.length) {
+            return toast.info('Add items to cart before checkout')
+        }
+
+        if (!khaltiPublicKey) {
+            return toast.error('Khalti public key is not configured')
+        }
+
+        const amount = totalPrice();
+        const amountInPaisa = amount * 100;
+
+        if (!window.KhaltiCheckout) {
+            return toast.error('Khalti checkout failed to load. Refresh the page and try again.')
+        }
+
+        const config = {
+            publicKey: khaltiPublicKey,
+            productIdentity: 'COSMETICS_CART',
+            productName: 'Cosmetics Order',
+            productUrl: window.location.href,
+            eventHandler: {
+                onSuccess: async (payload) => {
+                    try {
+                        setLoading(true)
+                        const { data } = await axios.post(`${API}/api/v1/order/khalti/verify`, {
+                            token: payload.token,
+                            amount: amountInPaisa,
+                            products: cart,
+                        });
+
+                        if (data?.success) {
+                            setCart([])
+                            localStorage.removeItem('cart')
+                            toast.success('Payment successful. Order created.')
+                            navigate('/dashboard/user/orders')
+                        } else {
+                            toast.error(data?.message || 'Payment verification failed')
+                        }
+                    } catch (error) {
+                        console.error(error)
+                        toast.error('Payment verification failed. Please try again.')
+                    } finally {
+                        setLoading(false)
+                    }
+                },
+                onError: (error) => {
+                    console.error('Khalti checkout error:', error)
+                    toast.error('Khalti payment process was interrupted.')
+                },
+                onClose: () => {
+                    toast.info('Khalti payment window closed.')
+                },
+            },
+            paymentPreference: ['KHALTI', 'EBANKING', 'MOBILE_BANKING', 'CONNECT_IPS', 'SCT'],
+            amount: amountInPaisa,
+        }
+
+        const checkout = new window.KhaltiCheckout(config)
+        checkout.show({ amount: amountInPaisa })
+    }
+
     return (
         <Layout>
             <div className="container mt-3">
 
                 <div className="row">
                     <div className="col-md-12">
-                        <h1 className='text-center bg-light p-2 mb-1'>{`Hello ${auth?.token && auth?.user?.name}`}</h1>
-                        <h4 className='text-center'>{cart?.length ? `You have ${cart.length} items in your cart ${auth?.token ? "" : "please login to checkout"}` : "Your cart is empty"}</h4>
-
+                        <h1 className='text-center bg-light p-2 mb-1'>{`Hello ${auth?.token ? auth?.user?.name : 'Guest'}`}</h1>
+                        <h4 className='text-center'>{cart?.length ? `You have ${cart.length} item${cart.length > 1 ? 's' : ''} in your cart ${auth?.token ? '' : 'please login to checkout'}` : 'Your cart is empty'}</h4>
                     </div>
                 </div>
 
                 <div className='row'>
                     <div className='col-md-8'>
-                        {
-                            cart?.map(p => (
-                                <div className='row mb-2 p-3 card flex-row'>
-                                    <div className='col-md-4'>
-                                        <img
-                                            src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
-                                            className="card-img-top"
-                                            alt={p.name}
-                                            width="100px"
-                                            height={"50px"}
-
-                                        />
-                                    </div>
-                                    <div className='col-md-8'>
-                                        <b>{p.name}</b>
-                                        <p>{p.description.substring(0, 30)}</p>
-                                        <h4>Price: रु{p.price}</h4>
-                                        <button className='btn btn-danger' onClick={() => removeCartItem(p._id)}>Remove</button>
-                                    </div>
+                        {cart?.length ? cart.map(p => (
+                            <div key={p._id} className='row mb-2 p-3 card flex-row'>
+                                <div className='col-md-4'>
+                                    <img
+                                        src={`${API}/api/v1/product/product-photo/${p._id}?${Date.now()}`}
+                                        className="card-img-top"
+                                        alt={p.name}
+                                        width="100px"
+                                        height={"50px"}
+                                    />
                                 </div>
-
-                            ))
-                        }
+                                <div className='col-md-8'>
+                                    <b>{p.name}</b>
+                                    <p>{p.description?.substring(0, 30)}</p>
+                                    <h4>Price: रु{p.price}</h4>
+                                    <button className='btn btn-danger' onClick={() => removeCartItem(p._id)}>Remove</button>
+                                </div>
+                            </div>
+                        )) : (
+                            <div className='alert alert-info'>Your cart is empty.</div>
+                        )}
                     </div>
                     <div className='col-md-4 text-center'>
-                        <h2>Cart Summary</h2>
-                        <p>TOTAL | CHECKOUT | PAYMENT</p>
-                        <hr />
+                        <div className='card p-3'>
+                            <h2>Cart Summary</h2>
+                            <p>TOTAL | CHECKOUT | PAYMENT</p>
+                            <hr />
+                            <h4>Total: रु{totalPrice()}</h4>
 
-                        <h4>Total: रु{totalPrice()}</h4>
-                        {auth?.user?.address ? (
-                            <>
+                            {auth?.user?.address ? (
+                                <>
+                                    <div className='mb-3'>
+                                        <h4>Current Address</h4>
+                                        <h5>{auth?.user?.address}</h5>
+                                        <button className='btn btn-outline-warning mb-3' onClick={() => navigate('/dashboard/user/profile')}>Update Address</button>
+                                    </div>
+                                </>
+                            ) : (
                                 <div className='mb-3'>
-                                    <h4>Current Address</h4>
-                                    <h5>{auth?.user?.address}</h5>
-                                    <button className='btn btn-outline-warning' onClick={() => navigate('/dashboard/user/profile')}>Update Address</button>
+                                    {auth?.token ? (
+                                        <button className='btn btn-outline-warning' onClick={() => navigate('/dashboard/user/profile')}>Update Address</button>
+                                    ) : (
+                                        <button className='btn btn-outline-warning' onClick={() => navigate('/login', { state: '/cart' })}>Please Login to Checkout</button>
+                                    )}
                                 </div>
+                            )}
 
-                            </>
-                        ) : (
-                            <div className='mb-3'>
-                                {auth?.token ? (
-                                    <button className='btn btn-outline-warning' onClick={() => navigate('/dashboard/user/profile')}>Update Address</button>
-                                ) : (
-                                    <button className='btn btn-outline-warning' onClick={() => navigate('/login', { state: "/cart" })}>Please Login to Checkout</button>
-                                )}
-                            </div>
-                        )}
+                            <button
+                                className='btn btn-primary btn-lg w-100'
+                                onClick={handleKhaltiCheckout}
+                                disabled={!cart?.length || !auth?.token || !auth?.user?.address || loading}
+                            >
+                                {loading ? 'Processing payment...' : 'Pay with Khalti'}
+                            </button>
+
+                            {!khaltiPublicKey && (
+                                <p className='text-danger mt-3'>Khalti public key missing. Add REACT_APP_KHALTI_PUBLIC_KEY to .env.</p>
+                            )}
+                        </div>
                     </div>
 
                 </div>
             </div>
-
         </Layout >
     )
 }

@@ -8,6 +8,7 @@ import categoryRoute from './routes/categoryRoutes.js';
 import productRoute from './routes/productRoutes.js';
 import subcategoryRoute from './routes/subcategoryRoutes.js';
 import sectionRoute from './routes/sectionRoutes.js';
+import orderRoute from './routes/orderRoute.js';
 
 dotenv.config();
 connectDB();
@@ -30,6 +31,7 @@ app.use('/api/v1/category', categoryRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/subcategory', subcategoryRoute);
 app.use('/api/v1/section', sectionRoute);
+app.use('/api/v1/order', orderRoute);
 
 app.get('/', (req, res) => {
     res.send("API WORKING");
