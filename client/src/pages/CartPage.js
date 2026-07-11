@@ -2,18 +2,20 @@ import React, { useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import { useCart } from '../context/cart';
 import { useAuth } from '../context/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const CartPage = () => {
     const API = process.env.REACT_APP_API || ''
     const khaltiPublicKey = process.env.REACT_APP_KHALTI_PUBLIC_KEY || ''
+    const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY || ''
 
     const [auth, setAuth] = useAuth();
     const [cart, setCart] = useCart();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const totalPrice = () => {
         try {
@@ -142,6 +144,44 @@ const CartPage = () => {
         }
     }
 
+    const handleStripeCheckout = async () => {
+        if (!auth?.token) {
+            return navigate('/login', { state: '/cart' });
+        }
+
+        if (!auth?.user?.address) {
+            toast.info('Please update your address before checkout')
+            return navigate('/dashboard/user/profile')
+        }
+
+        if (!cart?.length) {
+            return toast.info('Add items to cart before checkout')
+        }
+
+        if (!stripePublicKey) {
+            return toast.error('Stripe public key is not configured')
+        }
+
+        try {
+            setLoading(true)
+            const { data } = await axios.post(`${API}/api/v1/order/stripe/create-session`, {
+                products: cart,
+            });
+
+            if (!data?.success || !data?.sessionId) {
+                return toast.error(data?.message || 'Unable to create Stripe checkout session')
+            }
+
+            const stripe = window.Stripe(stripePublicKey)
+            await stripe.redirectToCheckout({ sessionId: data.sessionId })
+        } catch (error) {
+            console.error('Stripe checkout error:', error)
+            toast.error('Unable to start Stripe checkout. Please try again.')
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <Layout>
             <div className="container mt-3">
@@ -203,15 +243,26 @@ const CartPage = () => {
                             )}
 
                             <button
-                                className='btn btn-primary btn-lg w-100'
+                                className='btn btn-primary btn-lg w-100 mb-2'
                                 onClick={handleKhaltiCheckout}
                                 disabled={!cart?.length || !auth?.token || !auth?.user?.address || loading}
                             >
                                 {loading ? 'Processing payment...' : 'Pay with Khalti'}
                             </button>
 
+                            <button
+                                className='btn btn-success btn-lg w-100'
+                                onClick={handleStripeCheckout}
+                                disabled={!cart?.length || !auth?.token || !auth?.user?.address || loading}
+                            >
+                                {loading ? 'Processing payment...' : 'Pay with Stripe'}
+                            </button>
+
                             {!khaltiPublicKey && (
                                 <p className='text-danger mt-3'>Khalti public key missing. Add REACT_APP_KHALTI_PUBLIC_KEY to .env.</p>
+                            )}
+                            {!stripePublicKey && (
+                                <p className='text-danger mt-3'>Stripe public key missing. Add REACT_APP_STRIPE_PUBLIC_KEY to .env.</p>
                             )}
                         </div>
                     </div>
