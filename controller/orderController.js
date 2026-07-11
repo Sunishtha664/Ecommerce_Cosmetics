@@ -20,7 +20,13 @@ export const verifyKhaltiPaymentController = async (req, res) => {
             });
         }
 
-        const response = await fetch('https://khalti.com/api/v2/payment/verify/', {
+        // Dynamically select sandbox or production endpoint
+        const isTestKey = khaltiSecretKey.startsWith('test_') || khaltiSecretKey.includes('test');
+        const verificationUrl = isTestKey
+            ? 'https://dev.khalti.com/api/v2/payment/verify/'
+            : 'https://khalti.com/api/v2/payment/verify/';
+
+        const response = await fetch(verificationUrl, {
             method: 'POST',
             headers: {
                 Authorization: `Key ${khaltiSecretKey}`,

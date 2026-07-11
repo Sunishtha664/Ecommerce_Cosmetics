@@ -39,6 +39,26 @@ const CartPage = () => {
         }
     }
 
+    const ensureKhaltiCheckout = async () => {
+        if (window.KhaltiCheckout) return;
+
+        await new Promise((resolve, reject) => {
+            const existingScript = document.querySelector('script[src="https://khalti.com/static/khalti-checkout.js"]');
+            if (existingScript) {
+                existingScript.onload = resolve;
+                existingScript.onerror = () => reject(new Error('Unable to load Khalti checkout script.'));
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://khalti.com/static/khalti-checkout.js';
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Unable to load Khalti checkout script. This is usually caused by a network, firewall, VPN, or ad-blocker restriction.'));
+            document.body.appendChild(script);
+        });
+    };
+
     const handleKhaltiCheckout = async () => {
         if (!auth?.token) {
             return navigate('/login', { state: '/cart' });
@@ -57,57 +77,69 @@ const CartPage = () => {
             return toast.error('Khalti public key is not configured')
         }
 
-        const amount = totalPrice();
-        const amountInPaisa = amount * 100;
+        setLoading(true)
 
-        if (!window.KhaltiCheckout) {
-            return toast.error('Khalti checkout failed to load. Refresh the page and try again.')
-        }
+        try {
+            await ensureKhaltiCheckout();
 
-        const config = {
-            publicKey: khaltiPublicKey,
-            productIdentity: 'COSMETICS_CART',
-            productName: 'Cosmetics Order',
-            productUrl: window.location.href,
-            eventHandler: {
-                onSuccess: async (payload) => {
-                    try {
-                        setLoading(true)
-                        const { data } = await axios.post(`${API}/api/v1/order/khalti/verify`, {
-                            token: payload.token,
-                            amount: amountInPaisa,
-                            products: cart,
-                        });
+            if (!window.KhaltiCheckout) {
+                throw new Error('Khalti checkout failed to load. Refresh the page and try again.')
+            }
 
-                        if (data?.success) {
-                            setCart([])
-                            localStorage.removeItem('cart')
-                            toast.success('Payment successful. Order created.')
-                            navigate('/dashboard/user/orders')
-                        } else {
-                            toast.error(data?.message || 'Payment verification failed')
+            const amount = totalPrice();
+            const amountInPaisa = amount * 100;
+            const returnUrl = process.env.REACT_APP_KHALTI_RETURN_URL || window.location.href;
+
+            const config = {
+                publicKey: khaltiPublicKey,
+                productIdentity: 'COSMETICS_CART',
+                productName: 'Cosmetics Order',
+                productUrl: returnUrl,
+                eventHandler: {
+                    onSuccess: async (payload) => {
+                        try {
+                            setLoading(true)
+                            const { data } = await axios.post(`${API}/api/v1/order/khalti/verify`, {
+                                token: payload.token,
+                                amount: amountInPaisa,
+                                products: cart,
+                            });
+
+                            if (data?.success) {
+                                setCart([])
+                                localStorage.removeItem('cart')
+                                toast.success('Payment successful. Order created.')
+                                navigate('/dashboard/user/orders')
+                            } else {
+                                toast.error(data?.message || 'Payment verification failed')
+                            }
+                        } catch (error) {
+                            console.error(error)
+                            toast.error('Payment verification failed. Please try again.')
+                        } finally {
+                            setLoading(false)
                         }
-                    } catch (error) {
-                        console.error(error)
-                        toast.error('Payment verification failed. Please try again.')
-                    } finally {
-                        setLoading(false)
-                    }
+                    },
+                    onError: (error) => {
+                        console.error('Khalti checkout error:', error)
+                        toast.error('Khalti payment process was interrupted.')
+                    },
+                    onClose: () => {
+                        toast.info('Khalti payment window closed.')
+                    },
                 },
-                onError: (error) => {
-                    console.error('Khalti checkout error:', error)
-                    toast.error('Khalti payment process was interrupted.')
-                },
-                onClose: () => {
-                    toast.info('Khalti payment window closed.')
-                },
-            },
-            paymentPreference: ['KHALTI', 'EBANKING', 'MOBILE_BANKING', 'CONNECT_IPS', 'SCT'],
-            amount: amountInPaisa,
-        }
+                paymentPreference: ['KHALTI', 'EBANKING', 'MOBILE_BANKING', 'CONNECT_IPS', 'SCT'],
+                amount: amountInPaisa,
+            }
 
-        const checkout = new window.KhaltiCheckout(config)
-        checkout.show({ amount: amountInPaisa })
+            const checkout = new window.KhaltiCheckout(config)
+            checkout.show({ amount: amountInPaisa })
+        } catch (error) {
+            console.error('Khalti checkout error:', error)
+            toast.error(error?.message || 'Khalti payment process was interrupted.')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (

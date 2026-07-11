@@ -96,6 +96,21 @@ const Header = () => {
                                     </div>
                                 </div>
                             </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/about">
+                                    About
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/contact">
+                                    Contact
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/policy">
+                                    Policy
+                                </NavLink>
+                            </li>
                         </ul>
 
                         {/* MIDDLE: Search Bar */}
